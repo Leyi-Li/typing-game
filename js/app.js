@@ -5,8 +5,140 @@ var canvas = document.getElementById('game');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 ctx.font = '20px sans-serif';
-var words = ['ain', 'hello', 'sup', 'whaddup', 'hey', 'bye', 'goodbye', 'buh-bye'];
 var degrees = [0,15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240,255,270,285,300,315,330,345,360];
+var wordsHTML = ['<!DOCTYPE>', '<a>', '<abbr>', 
+    '<acronym>',
+    '<address>',
+    '<article>',
+    '<aside>',
+    '<audio>',
+    '<b>',
+    '<base>',
+    '<body>',
+    '<br>',
+    '<button>',
+    '<canvas>',
+    '<caption>',
+    '<cite>',
+    '<div>',
+    '<dl>',
+    '<dt>',
+    '<em>',
+    '<fieldset>',
+    '<figcaption>',
+    '<figure>',
+    '<footer>',
+    '<form>',
+    '<h1>',
+    '<h2>',
+    '<h3>',
+    '<head>',
+    '<header>',
+    '<hr>',
+    '<html>',
+    '<i>',
+    '<img>',
+    '<input>',
+    '<label>',
+    '<legend>',
+    '<li>',
+    '<link>',
+    '<main>',
+    '<map>',
+    '<meta>',
+    '<nav>',
+    '<object>',
+    '<option>',
+    '<p>',
+    '<script>',
+    '<section>',
+    '<select>',
+    '<source>',
+    '<span>',
+    '<strong>',
+    '<table>',
+    '<tbody>',
+    '<td>',
+    '<tfoot>',
+    '<thead>',
+    '<title>',
+    '<ul>',
+    '<video>']          
+
+
+var wordsCSS = [
+    'a:link',
+    'a:visited',
+    'a:hover',
+    'a:active',
+    'align',
+    'background-color',
+    'background-image',
+    'background-repeat',
+    'background-position',
+    'border-color',
+    'border-collapse',
+    'border-radius',
+    'border-style',
+    'border-spacing',
+    'border-width',
+    'color',
+    'display',
+    'float',
+    'font',
+    'font-family',
+    'font-size',
+    'font-style',
+    'font-weight',
+    'height',
+    'inline-block',
+    'letter-spacing',
+    'line-height',
+    'list-style',
+    'list-style-image',
+    'list-style-position',
+    'list-style-type',
+    'margin',
+    'margin-bottom',
+    'margin-left',
+    'margin-right',
+    'margin-top',
+    'overflow:visible',
+    'overflow:hidden',
+    'overflow:scroll',
+    'overflow:auto',
+    'opacity',
+    'padding',
+    'padding-bottom',
+    'padding-left',
+    'padding-right',
+    'padding-top',
+    'position',
+    'position:static',
+    'positon:relative',
+    'position:fixed',
+    'position:absolute',
+    'text-align',
+    'text-decoration',
+    'text-indent',
+    'text-shadow',
+    'text-transform',
+    'text-overflow',
+    'width']
+
+var wordsJS = [
+    'document.getElementById();',
+    'document.getElementsById();',
+    'document.getElementsByTagName();',
+    'document.getElementsByClassName();',
+    'document.createElement();',
+    'document.removeChild();',
+    'document.appendChild();',
+    'document.replaceChild();',
+    'element.innerHTML',
+    'element.attribute',
+    'element.setAttribute'];
+
 var wordIndex = 0;
 var letterIndex = 0;
 var wordX = -50;
@@ -21,22 +153,10 @@ var stars = [];
 var spawnLocation = [];
 Word.list = [];
 
-function blackHoleInitialize() { 
-  for (var i = 0; i < 50; i++) { 
-    particles.push(new Particle(canvas.width/2, canvas.height/2, randomIntBetween(1,3), randomColor()));
-  }
-}
-
-function starInitialize() { 
-  for (var i = 0; i < 200; i++) {
-    stars.push(new Star(randomIntBetween(0, canvas.width), randomIntBetween(0, canvas.height), randomIntBetween(1,2), randomColor(), randomNumberBetween(0.01,0.03)));
-  }
-}
-
 function wordInitialize() { 
   locationSpawning();
   var randomLocation = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
-  var randomWord = words[randomIntBetween(0,words.length-1)];
+  var randomWord = wordsHTML[randomIntBetween(0,wordsHTML.length-1)];
   var randomWordLength = ctx.measureText(randomWord).width;
   new Word(wordX, randomLocation, randomWordLength/2 + padding, randomColor(), randomIntBetween(0.01, 0.03));
 }
@@ -48,108 +168,28 @@ function Word(x, y, radius, color, dx, word) {
   this.color = color;
   this.dx = dx;
   this.word = word;
-  this.list.push();
+  Word.list.push(this);
 }
 
 Word.prototype.draw = function() { 
   ctx.fillStyle = 'white';
-  ctx.fillText(words[wordIndex], x, y);
-  wordLength = ctx.measureText(words[wordIndex]).width;
+  ctx.fillText(this.word, this.x, this.y);
+  wordLength = ctx.measureText(this.word).width;
   ctx.beginPath();
   ctx.arc(x + wordLength/2, y - wordHeight, wordLength/2 + padding, 0, 2*Math.PI, false);
-  ctx.strokeStyle = 'red';
-  ctx.stroke();
 }
 
-function Star(x, y, radius, color, dx) {
-  this.x = x;
-  this.y = y;
-  this.radius = radius;
-  this.color = color;
-  this.dx = dx;
-  // this.dy = dy;
-}
-
-Star.prototype.draw = function() {
-  ctx.beginPath();
-  ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-  ctx.fillStyle = this.color;
-  ctx.fill();
-  ctx.closePath();
-}
-
-Star.prototype.render = function() {
-
-  this.x += this.dx;
-
-  if (this.x > canvas.width) { 
-    this.x = 0;
-  }
-  // this.y += this.dy;
-
-  this.draw();
-}
-// Word.list = [];
-// function Word(x, y, radius, color, word) { 
-//   this.x = x;
-//   this.y = y;
-//   this.radius = radius; 
-//   this.color = color;
-//   this.word = word;
-//   this.list.push();
-//   // this.dx = 
-//   // this.dy = 
-// }
-
-function Particle(x, y, radius, color) {
-  this.x = x;
-  this.y = y;
-  this.radius = radius;
-  this.color = color;
-  this.radians = Math.random() * Math.PI * 2;
-  this.velocity = 0.08;
-  this.pathRadius = randomIntBetween(10, 60);
-}
-
-Particle.prototype.render = function() {
-  this.radians += this.velocity;
-
-  this.x = x + Math.cos(this.radians) * this.pathRadius;
-  this.y = y + Math.sin(this.radians) * this.pathRadius; 
-
+Word.prototype.render = function() { 
   this.draw();
 }
 
-Particle.prototype.draw = function() {
-  ctx.beginPath();
-  ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-  ctx.fillStyle = this.color;
-  ctx.fill();
-  ctx.closePath();
-}
 
-function animateBlackHole() { 
-  requestAnimationFrame(animateBlackHole);
-  ctx.fillStyle = 'rgba(0,0,0,0.1)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  particles.forEach(particle => { 
-    particle.render();
-  });
-}
-
-function animateStar() { 
-  requestAnimationFrame(animateStar);
-
-  stars.forEach(star => { 
-    star.render();
-  });
-}
-
-function animate() {
-  requestAnimationFrame(animate);
+function animateWord() {
+  requestAnimationFrame(animateWord);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  
   // particles.forEach(particle => { 
   //   particle.render();
   // });
@@ -162,6 +202,8 @@ function locationSpawning() {
   }
 }
 
+// wordInitialize();
+// animateWord();
 starInitialize();
 animateStar();
 blackHoleInitialize();
