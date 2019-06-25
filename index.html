@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,13 +8,32 @@
     <title>Typing Game</title>
 
     <link rel="stylesheet" href="./css/reset.css">
-    <link rel="stylesheet" href="./css/style.css">
+  
+    <link rel="stylesheet" href="./css/background.css">
+      <link rel="stylesheet" href="./css/frontPage.css">
 </head>
-<body>
-    <header></header>
-    <main>
-
+<body class="stars">
+    <header class="twinkling">
+            
+    </header>
+    <main class="clouds">
+        <div class="welcome">
+            <p id = "welcomeWords"></p>
+        </div>   
+        <div class="start">
+            <a  href="game.html">Start Game</a>
+        </div> 
+        <div class="score">
+                <a href="hiScore.html">High Score</a>
+        </div> 
+        <div class="instruction">
+            <p>How to play this game:</p>
+        </div> 
     </main>
-    <footer></footer>
+    <footer>
+        <p class="about"><a href="aboutMe.html"> About </a></p>
+    </footer>
+    <script type= "text/javascript" src="js/utils.js"></script>
+    <script type ="text/javascript" src="./js/getName.js"></script>
 </body>
 </html>

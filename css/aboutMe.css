@@ -1,0 +1,33 @@
+div {
+  width: 49%;
+  height: 49%;
+  float: left; 
+  color: white;
+}
+
+#div1 {
+  border: 1px solid black;
+}
+#div2 {
+  /* background: #AAA;  */
+}
+#div3 {
+  /* background: #777;  */
+}
+#div4 {
+
+}
+
+.left {
+  float: left;
+  margin-left: 200px;
+  margin-top: 150px; 
+ }
+
+ p {
+   border: 1px solid green;
+   text-align: center;
+   margin-top: 200px;
+   margin-left: 250px;
+   width: 50%;
+ }

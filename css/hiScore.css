@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
+
+#card {
+	width: 40%;
+	height: 100%;
+  /* background-color: #000000; */
+  color: white;
+	
+	position: absolute;
+	top:0;
+	bottom: 20;
+	left: 0;
+	right: 0;
+  	
+	margin: auto;
+}
+
+#hiScore {
+  padding-top: 250px;
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 50px;
+}
+
+ol {
+  padding-left: 10%;
+  padding-top: 40px;
+  font-family: 'Press Start 2P', cursive;
+}
+
+li {
+  margin: 20px;
+}
+
