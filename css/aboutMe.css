@@ -2,7 +2,7 @@ div {
   width: 49%;
   height: 49%;
   float: left; 
-  /* color: white; */
+  color: white;
 }
 
 #div1 {
@@ -20,12 +20,14 @@ div {
 
 .left {
   float: left;
-  margin-left: 100px;
+  margin-left: 200px;
+  margin-top: 150px; 
  }
 
  p {
    border: 1px solid green;
    text-align: center;
-   margin: auto;
+   margin-top: 200px;
+   margin-left: 250px;
    width: 50%;
  }
