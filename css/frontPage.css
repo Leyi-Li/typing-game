@@ -9,11 +9,14 @@ body{
     position:relative;
     text-align: center;
     margin:20px;
+    letter-spacing: 0.5px;
+    line-height: 70px;
 }
+
 
 .welcome{
     font-size:2em;
-    margin-top:30vh;
+    margin-top:5vh;
     margin-bottom: 30px;
 }
 
@@ -53,3 +56,12 @@ footer{
     border-top:1px dashed white;
     padding: 20px;
 }
+
+#player {
+    width:150px;
+    position: relative;
+    float: left;
+    left:0;
+    top:0;
+    height:30px;
+  }

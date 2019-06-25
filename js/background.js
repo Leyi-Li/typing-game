@@ -1,7 +1,8 @@
 function starInitialize() { 
   for (var i = 0; i < 200; i++) {
-    stars.push(new Star(randomIntBetween(0, canvas.width), randomIntBetween(0, canvas.height), randomIntBetween(1,2), randomColor(), randomNumberBetween(0.01,0.03)));
+    stars.push(new Star(randomIntBetween(0, canvas.width), randomIntBetween(0, canvas.height), randomIntBetween(1,2), randomColor(), randomNumberBetween(0.3,0.5)));
   }
+  animateStar();
 }
 
 function Star(x, y, radius, color, dx) {
