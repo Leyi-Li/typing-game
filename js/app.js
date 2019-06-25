@@ -4,7 +4,7 @@ var ctx = document.getElementById('game').getContext('2d');
 var canvas = document.getElementById('game');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-ctx.font = '20px sans-serif';
+ctx.font = '15px Helvetica';
 var degrees = [0,15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240,255,270,285,300,315,330,345,360];
 var wordsHTML = ['<!DOCTYPE>', '<a>', '<abbr>', 
     '<acronym>',
@@ -139,15 +139,21 @@ var wordsJS = [
     'element.attribute',
     'element.setAttribute'];
 
-var wordIndex = 0;
-var letterIndex = 0;
-var wordX = -50;
 var x = window.innerWidth - 200;
 var y = window.innerHeight/2;
+var score = 0;
+var eventHorizonRadius = 200;
+var pathRadius = 200;
+var radians = (3 * Math.PI)/4;
+var randomIndex = randomIntBetween(0, wordsHTML.length-1);
+var wordIndex = 0;
+var letterIndex = 0;
+var wordX = 0;
 var dz = 2;
 var wordLength = 0;
 var wordHeight = 5;
 var padding = 5;
+var keyBefore ='';
 var particles = [];
 var stars = [];
 var spawnLocation = [];
@@ -155,10 +161,9 @@ Word.list = [];
 
 function wordInitialize() { 
   locationSpawning();
-  var randomLocation = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
-  var randomWord = wordsHTML[randomIntBetween(0,wordsHTML.length-1)];
-  var randomWordLength = ctx.measureText(randomWord).width;
-  new Word(wordX, randomLocation, randomWordLength/2 + padding, randomColor(), randomIntBetween(0.01, 0.03));
+  for (var i = 0; i < wordsHTML.length; i++) {
+    new Word(wordX, spawnLocation[randomIntBetween(0,spawnLocation.length-1)], (ctx.measureText(wordsHTML[i]).width)/2 + padding, randomColor(), randomNumberBetween(0.3, 0.5), wordsHTML[i]);
+  }
 }
 
 function Word(x, y, radius, color, dx, word) { 
@@ -176,38 +181,70 @@ Word.prototype.draw = function() {
   ctx.fillText(this.word, this.x, this.y);
   wordLength = ctx.measureText(this.word).width;
   ctx.beginPath();
-  ctx.arc(x + wordLength/2, y - wordHeight, wordLength/2 + padding, 0, 2*Math.PI, false);
+  ctx.arc(this.x + wordLength/2, this.y - wordHeight, wordLength/2 + padding, 0, 2*Math.PI, false);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = this.color;
+  ctx.stroke();
 }
 
 Word.prototype.render = function() { 
+  if (distance(this.x, this.y, x, y) < eventHorizonRadius) { 
+    radians += 0.05;
+    this.x = x + Math.cos(radians) * pathRadius;
+    this.y = y + Math.sin(radians) * pathRadius;
+
+  } else { 
+    Word.list[randomIndex].x += Word.list[randomIndex].dx;
+  }
   this.draw();
+  if (letterIndex > 0) {
+    ctx.fillStyle = 'red';
+    ctx.fillText(this.word.slice(0, letterIndex), this.x, this.y);
+  } 
 }
-
-
 
 function animateWord() {
   requestAnimationFrame(animateWord);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  
-  // particles.forEach(particle => { 
-  //   particle.render();
-  // });
+  Word.list[randomIndex].render();
 }
 
 function locationSpawning() { 
   var locationAmount = Math.floor(canvas.height/10);
-  for(var i = 1; i <= locationAmount; i++) { 
+  for(var i = 1; i <= 10; i++) { 
     spawnLocation.push(locationAmount * i);
   }
 }
 
-// wordInitialize();
-// animateWord();
 starInitialize();
 animateStar();
 blackHoleInitialize();
 animateBlackHole();
+wordInitialize();
+animateWord();
+
+window.setInterval(() => { 
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}, 10);
+
+window.setInterval(() => { 
+  if (distance(Word.list[randomIndex].x, Word.list[randomIndex].y, x, y) < eventHorizonRadius)
+    pathRadius = pathRadius - 1;
+}, 30);
+
+window.addEventListener('keydown', keyPress);
+
+function keyPress(e) { 
+  var key = e.key;
+  var currentLetter = Word.list[randomIndex].word.charAt(letterIndex);
+  if (key === currentLetter) { 
+    letterIndex++;
+  } else if(letterIndex === Word.list[randomIndex].word.length) { 
+    letterIndex = 0;
+    randomIndex = randomIntBetween(0, wordsHTML.length-1);
+    score++;
+    console.log(score);
+  }
+}
 
 
 // window.addEventListener('keydown', keyPress);

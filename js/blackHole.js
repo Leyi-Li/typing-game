@@ -1,5 +1,5 @@
 function blackHoleInitialize() { 
-  for (var i = 0; i < 50; i++) { 
+  for (var i = 0; i < 250; i++) { 
     particles.push(new Particle(canvas.width/2, canvas.height/2, randomIntBetween(1,3), randomColor()));
   }
 }
@@ -15,6 +15,7 @@ function Particle(x, y, radius, color) {
 }
 
 Particle.prototype.render = function() {
+  
   this.radians += this.velocity;
 
   this.x = x + Math.cos(this.radians) * this.pathRadius;
@@ -33,8 +34,8 @@ Particle.prototype.draw = function() {
 
 function animateBlackHole() { 
   requestAnimationFrame(animateBlackHole);
-  ctx.fillStyle = 'rgba(0,0,0,0.1)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // ctx.fillStyle = 'rgba(0,0,0,0.05)';
+  // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   particles.forEach(particle => { 
     particle.render();
