@@ -191,12 +191,11 @@ function word3Initialize() {
 }
 
 function spawnNewWord() {
-  
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
   var radius = (ctx.measureText(wordsCSS[randomIndex]).width)/2 + padding;
   var dx = randomNumberBetween(1,2);
   var word = checkDuplicate();
-  newWord = new Word(wordX, y, radius, 'red', dx, word, pathRadius, letterIndex);
+  newWord = new Word(wordX, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
 function spawnNewWord2() {
@@ -318,7 +317,7 @@ function keyPress2(e) {
   } else if(newWord2.letterIndex === newWord2.word.length) {
     score++;
     word2Initialize();
-    wordReset();
+    // wordReset();
   }
 }
 
@@ -399,12 +398,10 @@ function keyPress(e) {
     if (score === 2) {
       wordInitialize();
       word2Initialize();
-      wordReset();
       window.addEventListener('keydown', keyPress2);
     } else if (score === 3 || score === 4) {
       wordInitialize();
       word3Initialize();
-      wordReset();
       window.addEventListener('keydown', keyPress3);
     } else {
       wordInitialize();
