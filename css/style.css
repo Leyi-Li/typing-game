@@ -1,3 +1,28 @@
 #game { 
   background: black;
 }
+
+
+#life1{
+  top:0;
+  right:0;
+  width:40px;
+  height:40px;
+  position: absolute;
+}
+
+#life2{
+  top:0;
+  right: 10%;
+  width:40px;
+  height:40px;
+  position: absolute;
+}
+
+#life3{
+  top:0;
+  right:5%;
+  width:40px;
+  height:40px;
+  position: absolute;
+}
