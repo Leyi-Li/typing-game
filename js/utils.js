@@ -16,5 +16,5 @@ function distance(x1, y1, x2, y2) {
 }
 
 function randomNumberBetween(min, max) { 
-  return Math.random() * (max - min + 1) + min;
+  return Math.random() * (max - min) + min;
 }

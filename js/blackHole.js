@@ -2,6 +2,7 @@ function blackHoleInitialize() {
   for (var i = 0; i < 250; i++) { 
     particles.push(new Particle(canvas.width/2, canvas.height/2, randomIntBetween(1,3), randomColor()));
   }
+  animateBlackHole();
 }
 
 function Particle(x, y, radius, color) {
