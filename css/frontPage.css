@@ -13,9 +13,10 @@ body{
     line-height: 70px;
 }
 
+
 .welcome{
     font-size:2em;
-    margin-top:30vh;
+    margin-top:5vh;
     margin-bottom: 30px;
 }
 
@@ -55,3 +56,12 @@ footer{
     border-top:1px dashed white;
     padding: 20px;
 }
+
+#player {
+    width:150px;
+    position: relative;
+    float: left;
+    left:0;
+    top:0;
+    height:30px;
+  }
