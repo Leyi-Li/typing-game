@@ -1,3 +1,4 @@
+
 'use strict';
 
 function randomIntBetween(min, max) {
@@ -13,11 +14,10 @@ function distance(x1, y1, x2, y2) {
   var yDistance = y2 - y1;
 
   return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-
 }
 
-function randomNumberBetween(min, max) {
-  return Math.random() * (max - min + 1) + min;
+function randomNumberBetween(min, max) { 
+  return Math.random() * (max - min) + min;
 }
 
 function addToLocalStorage(storageName,storageData){
