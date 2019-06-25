@@ -9,6 +9,8 @@ body{
     position:relative;
     text-align: center;
     margin:20px;
+    letter-spacing: 0.5px;
+    line-height: 70px;
 }
 
 .welcome{
