@@ -9,10 +9,10 @@ function randomColor() {
 }
 
 function distance(x1, y1, x2, y2) {
-  const xDist = x2 - x1;
-  const yDist = y2 - y1;
+  var xDistance = x2 - x1;
+  var yDistance = y2 - y1;
 
-  return Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2))
+  return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
 }
 
 function randomNumberBetween(min, max) { 
