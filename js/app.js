@@ -5,7 +5,7 @@ var canvas = document.getElementById('game');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 ctx.font = '15px Helvetica';
-var wordsHTML = [
+var words = [
   '<!DOCTYPE>',
   '<a>',
   '<abbr>',
@@ -65,9 +65,7 @@ var wordsHTML = [
   '<thead>',
   '<title>',
   '<ul>',
-  '<video>'];
-
-var wordsCSS = [
+  '<video>',
   'a:link',
   'a:visited',
   'a:hover',
@@ -125,9 +123,7 @@ var wordsCSS = [
   'text-shadow',
   'text-transform',
   'text-overflow',
-  'width'];
-
-var wordsJS = [
+  'width',
   'constructor',
   'document.getElementById();',
   'document.getElementsById();',
@@ -143,6 +139,10 @@ var wordsJS = [
   'function',
   'object',
   'prototype'];
+
+  var words10Fewer = words.filter(word => word.length < 10);
+  var wordsBetween10And20 = words.filter(word => word.length < 20 && word.length > 10);
+  var wordsAbove20 = words.filter(word => word.length > 20);
 
 var x = window.innerWidth - 200;
 var y = window.innerHeight/2;
@@ -171,6 +171,7 @@ var word2Animation;
 var word3Animation;
 var blackHoleAnimation;
 var lives = 3;
+var level = 0;
 
 function wordInitialize() {
   cancelAnimationFrame(wordAnimation);
@@ -191,26 +192,25 @@ function word3Initialize() {
 }
 
 function spawnNewWord() {
-  
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
-  var radius = (ctx.measureText(wordsCSS[randomIndex]).width)/2 + padding;
-  var dx = randomNumberBetween(1,2);
+  var radius = (ctx.measureText(words[randomIndex]).width)/2 + padding;
+  var dx = speedIncrease();
   var word = checkDuplicate();
-  newWord = new Word(wordX, y, radius, 'red', dx, word, pathRadius, letterIndex);
+  newWord = new Word(wordX, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
 function spawnNewWord2() {
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
-  var radius = (ctx.measureText(wordsCSS[randomIndex]).width)/2 + padding;
-  var dx = randomNumberBetween(1,2);
+  var radius = (ctx.measureText(words[randomIndex]).width)/2 + padding;
+  var dx = speedIncrease();
   var word = checkDuplicate();
   newWord2 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
 function spawnNewWord3() {
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
-  var radius = (ctx.measureText(wordsCSS[randomIndex]).width)/2 + padding;
-  var dx = randomNumberBetween(1,2);
+  var radius = (ctx.measureText(words[randomIndex]).width)/2 + padding;
+  var dx = speedIncrease();
   var word = checkDuplicate();
   newWord3 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
@@ -223,8 +223,8 @@ function animateWord() {
   }
   if (distance(newWord.x, newWord.y, x, y) < 20) {
     lives--;
-    wordReset();
     wordInitialize();
+    newWord.letterIndex = 0;
     checkBlackHole();
     if (lives === 0) {
       alert('game over');
@@ -240,8 +240,8 @@ function animateWord2() {
   }
   if (distance(newWord2.x, newWord2.y, x, y) < 20) {
     lives--;
-    wordReset();
     word2Initialize();
+    newWord2.letterIndex = 0;
     checkBlackHole();
     if (lives === 0) {
       alert('game over');
@@ -257,8 +257,8 @@ function animateWord3() {
   }
   if (distance(newWord3.x, newWord3.y, x, y) < 20) {
     lives--;
-    wordReset();
     word3Initialize();
+    newWord3.letterIndex = 0;
     checkBlackHole();
     if (lives === 0) {
       alert('game over');
@@ -334,6 +334,20 @@ function keyPress3(e) {
   }
 }
 
+function speedIncrease() { 
+  if (level === 0) { 
+    return randomNumberBetween(1,1.5);
+  } else if (level === 1) { 
+    return randomNumberBetween(2,2.5);
+  } else if (level === 2) { 
+    return randomNumberBetween(2.5,3);
+  } else if (level === 3) { 
+    return randomNumberBetween(3,3.5);
+  } else if (level === 4) { 
+    return randomNumberBetween(3.5,4);
+  }
+}
+
 function wordReset() {
   newWord.letterIndex = 0;
   newWord2.letterIndex = 0;
@@ -353,9 +367,10 @@ function checkDuplicate() {
   var randomIndex;
   var word;
   var duplicate = true;
+  // if (level = )
   while(duplicate) {
-    randomIndex = randomIntBetween(0, wordsCSS.length-1);
-    word = wordsCSS[randomIndex];
+    randomIndex = randomIntBetween(0, words.length-1);
+    word = words[randomIndex];
     if (pastWords.includes(word) === false) {
       pastWords.push(word);
       duplicate = false;
@@ -376,14 +391,20 @@ window.setInterval(() => {
 
 window.setInterval(() => {
   if(newWord.x > canvas.width) {
-    wordReset();
     wordInitialize();
   } else if (newWord2.x > canvas.width) {
-    wordReset();
     word2Initialize();
   } else if (newWord3.x > canvas.width) {
-    wordReset();
     word3Initialize();
+  }
+  if (score > 5) { 
+    level = 1;
+  } else if (score > 10) { 
+    level = 2;
+  } else if (score > 15) { 
+    level = 3;
+  } else if (score > 20) { 
+    level = 4;
   }
 }, 100);
 
@@ -396,15 +417,13 @@ function keyPress(e) {
   } else if(newWord.letterIndex === newWord.word.length) {
     score++;
     console.log(score);
-    if (score === 2) {
+    if (score === 5) {
       wordInitialize();
       word2Initialize();
-      wordReset();
       window.addEventListener('keydown', keyPress2);
-    } else if (score === 3 || score === 4) {
+    } else if (score === 10 || score === 11) {
       wordInitialize();
       word3Initialize();
-      wordReset();
       window.addEventListener('keydown', keyPress3);
     } else {
       wordInitialize();

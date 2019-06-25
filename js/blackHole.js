@@ -17,7 +17,7 @@ function biggerBlackHoleInitialize() {
 
 function biggestBlackHoleInitialize() { 
   cancelAnimationFrame(blackHoleAnimation);
-  eventHorizonRadius = 350;
+  eventHorizonRadius = 300;
   particles = [];
   for (var i = 0; i < 450; i++) { 
     particles.push(new BiggestParticle(canvas.width/2, canvas.height/2, randomIntBetween(1,3), randomColor()));
