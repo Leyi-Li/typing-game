@@ -1,7 +1,9 @@
+'use strict';
+
 function drawScore() {
-    updateScore = requestAnimationFrame(drawScore);
-    ctx.font = '16px Arial';
+    var updateScore = requestAnimationFrame(drawScore);
+    ctx.font = '25px Gadget';
     ctx.fillStyle = 'white';
-    ctx.fillText('Score: '+score, 8, 20);
+    ctx.fillText('Score: '+score, 8, 25);
   }
 

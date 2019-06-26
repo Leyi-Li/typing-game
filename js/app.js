@@ -323,6 +323,13 @@ function keyPress2(e) {
     checkLevel();
     word2Initialize();
     wordReset();
+    wordInitialize();
+    lives--;
+    // updateLives();
+    drawBox();
+    if (lives === 0) { 
+      alert('game over');
+    }
   }
 }
 
@@ -337,6 +344,16 @@ function keyPress3(e) {
     word3Initialize();
     wordReset();
   }
+
+  if (distance(newWord2.x, newWord2.y, x, y) < 20) {
+    wordReset2();
+    word2Initialize();
+    lives--;
+    // updateLives();
+    drawBox();
+    if (lives === 0) { 
+      alert('game over');
+    }
 }
 
 function speedIncrease() { 
@@ -358,6 +375,7 @@ function speedIncrease() {
     return randomNumberBetween(1.5,2);
   } else if (level === 8) { 
     return randomNumberBetween(2,2.5);
+
   }
 }
 
@@ -374,6 +392,15 @@ function checkBlackHole() {
   } else if (lives === 1) {
     biggestBlackHoleInitialize();
   }
+
+  if (distance(newWord3.x, newWord3.y, x, y) < 20) {
+    wordReset3();
+    word3Initialize();
+    lives--;
+    // updateLives();
+    drawBox();
+    if (lives === 0) { 
+      alert('game over');
 }
 
 function checkDuplicate() {
@@ -440,6 +467,7 @@ starInitialize();
 blackHoleInitialize();
 wordInitialize();
 drawScore();
+// addImage();
 
 window.setInterval(() => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
