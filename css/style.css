@@ -2,6 +2,11 @@
   background: black;
 }
 
+header{
+  background-color: black;
+  color:white; 
+}
+
 
 #life1{
   top:0;
@@ -25,4 +30,22 @@
   width:40px;
   height:40px;
   position: absolute;
+}
+
+.playButtons{
+  position:float;
+  width: 40vh;
+  top:0;
+  left:0;
+}
+
+button{
+  background-color: transparent;
+  color:white;
+  margin:none;
+  border:1px dashed white;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 20px;
+  margin:10px;
+  padding:4px;
 }
