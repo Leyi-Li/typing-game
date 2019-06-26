@@ -5,7 +5,7 @@ var canvas = document.getElementById('game');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 ctx.font = '15px Helvetica';
-var wordsHTML = [
+var words = [
   '<!DOCTYPE>',
   '<a>',
   '<abbr>',
@@ -65,9 +65,7 @@ var wordsHTML = [
   '<thead>',
   '<title>',
   '<ul>',
-  '<video>'];
-
-var wordsCSS = [
+  '<video>',
   'a:link',
   'a:visited',
   'a:hover',
@@ -125,9 +123,7 @@ var wordsCSS = [
   'text-shadow',
   'text-transform',
   'text-overflow',
-  'width'];
-
-var wordsJS = [
+  'width',
   'constructor',
   'document.getElementById();',
   'document.getElementsById();',
@@ -144,6 +140,10 @@ var wordsJS = [
   'object',
   'prototype'];
 
+  var words10Fewer = words.filter(word => word.length < 10);
+  var wordsBetween10And20 = words.filter(word => word.length < 20 && word.length > 10);
+  var wordsAbove20 = words.filter(word => word.length > 20);
+
 var x = window.innerWidth - 200;
 var y = window.innerHeight/2;
 var score = 0;
@@ -152,8 +152,6 @@ var pathRadius = 200;
 var radians = (3 * Math.PI)/4;
 var randomIndex;
 var letterIndex = 0;
-// var letterIndex2 = 0;
-// var letterIndex3 = 0;
 var wordX = 0;
 var wordLength = 0;
 var wordHeight = 5;
@@ -163,6 +161,7 @@ var stars = [];
 var spawnLocation = [];
 var wordsList = [];
 var pastWords = [];
+var explosionPieces = [];
 var newWord;
 var newWord2;
 var newWord3;
@@ -170,7 +169,10 @@ var wordAnimation;
 var word2Animation;
 var word3Animation;
 var blackHoleAnimation;
+var explosionAnimation;
+var shrinkingAnimation;
 var lives = 3;
+var level = 0;
 
 function wordInitialize() {
   cancelAnimationFrame(wordAnimation);
@@ -191,27 +193,30 @@ function word3Initialize() {
 }
 
 function spawnNewWord() {
-  
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
-  var radius = (ctx.measureText(wordsCSS[randomIndex]).width)/2 + padding;
-  var dx = randomNumberBetween(1,2);
   var word = checkDuplicate();
-  newWord = new Word(wordX, y, radius, 'red', dx, word, pathRadius, letterIndex);
+  var radius = (ctx.measureText(word).width/2) + padding;
+  console.log(radius);
+  var dx = speedIncrease();
+  
+  newWord = new Word(wordX, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
 function spawnNewWord2() {
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
-  var radius = (ctx.measureText(wordsCSS[randomIndex]).width)/2 + padding;
-  var dx = randomNumberBetween(1,2);
   var word = checkDuplicate();
+  var radius = (ctx.measureText(word).width/2) + padding;
+  var dx = speedIncrease();
+  
   newWord2 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
 function spawnNewWord3() {
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
-  var radius = (ctx.measureText(wordsCSS[randomIndex]).width)/2 + padding;
-  var dx = randomNumberBetween(1,2);
   var word = checkDuplicate();
+  var radius = (ctx.measureText(word).width/2) + padding;
+  var dx = speedIncrease();
+  
   newWord3 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
@@ -223,8 +228,9 @@ function animateWord() {
   }
   if (distance(newWord.x, newWord.y, x, y) < 20) {
     lives--;
-    wordReset();
+    drawBox();
     wordInitialize();
+    newWord.letterIndex = 0;
     checkBlackHole();
     if (lives === 0) {
       alert('game over');
@@ -240,8 +246,9 @@ function animateWord2() {
   }
   if (distance(newWord2.x, newWord2.y, x, y) < 20) {
     lives--;
-    wordReset();
+    drawBox();
     word2Initialize();
+    newWord2.letterIndex = 0;
     checkBlackHole();
     if (lives === 0) {
       alert('game over');
@@ -257,14 +264,26 @@ function animateWord3() {
   }
   if (distance(newWord3.x, newWord3.y, x, y) < 20) {
     lives--;
-    wordReset();
+    drawBox();
     word3Initialize();
+    newWord3.letterIndex = 0;
     checkBlackHole();
     if (lives === 0) {
       alert('game over');
     }
   }
 }
+
+function animateExplosion() { 
+  explosionAnimation = requestAnimationFrame(animateExplosion);
+  explosionPieces.forEach( (pieces, index) => {
+    pieces.render();
+    if (pieces.time === 0) { 
+      explosionPieces.splice(index, 1);
+    }
+  });
+}
+
 
 function Word(x, y, radius, color, dx, word, pathRadius, letterIndex) {
   this.x = x;
@@ -303,10 +322,70 @@ Word.prototype.render = function() {
   }
 };
 
+Word.prototype.explode = function() { 
+  // this.radius -= 10;
+  for(var i = 0; i < 150; i++) { 
+    explosionPieces.push(new Explosion(this.x + this.radius, this.y, randomNumberBetween(1,2), randomColor()));
+  }
+  cancelAnimationFrame(explosionAnimation);
+  animateExplosion();
+};
+
+function Explosion(x, y, radius, color) { 
+  Word.call(this, x, y, radius, color);
+  this.dx = randomNumberBetween(-2,2);
+  this.dy = randomNumberBetween(-2,2);
+  this.time = 60;
+  this.opacity = 1;
+}
+
+Explosion.prototype.draw = function() {
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI, false);
+  ctx.fillStyle = `rgba(${randomIntBetween(0,255)}, ${randomIntBetween(0,255)}, ${randomIntBetween(0,255)}, ${this.opacity})`;
+  ctx.fill();
+  ctx.closePath();
+};
+
+Explosion.prototype.render = function() {
+  this.draw();
+  this.x += this.dx;
+  this.y += this.dy;
+  this.time -= 1;
+  this.opacity -= 1 /this.time;
+};
+
 function locationSpawning() {
   var locationAmount = Math.floor(canvas.height/10);
   for(var i = 2; i <= 9; i++) {
     spawnLocation.push(locationAmount * i);
+  }
+}
+
+window.addEventListener('keydown', keyPress);
+function keyPress(e) {
+  var key = e.key;
+  var currentLetter = newWord.word.charAt(newWord.letterIndex);
+  if (key === currentLetter) {
+    newWord.letterIndex++;
+  } else if(newWord.letterIndex === newWord.word.length) {
+    score++;
+    checkLevel();
+    if (score === 5) {
+      newWord.explode();
+      wordInitialize();
+      word2Initialize();
+      window.addEventListener('keydown', keyPress2);
+    } else if (score === 10 || score === 11) {
+      newWord.explode();
+      wordInitialize();
+      word3Initialize();
+      window.addEventListener('keydown', keyPress3);
+    } else {
+      newWord.explode();
+      wordInitialize();
+      wordReset();
+    }
   }
 }
 
@@ -317,6 +396,8 @@ function keyPress2(e) {
     newWord2.letterIndex++;
   } else if(newWord2.letterIndex === newWord2.word.length) {
     score++;
+    newWord2.explode();
+    checkLevel();
     word2Initialize();
     wordReset();
   }
@@ -329,8 +410,33 @@ function keyPress3(e) {
     newWord3.letterIndex++;
   } else if(newWord3.letterIndex === newWord3.word.length) {
     score++;
+    newWord3.explode();
+    checkLevel();
+    word3Initialize();
     word3Initialize();
     wordReset();
+  }
+}
+
+function speedIncrease() { 
+  if (level === 0) { 
+    return randomNumberBetween(1,1.5);
+  } else if (level === 1) { 
+    return randomNumberBetween(2,2.5);
+  } else if (level === 2) { 
+    return randomNumberBetween(3,3.5);
+  } else if (level === 3) { 
+    return randomNumberBetween(1,1.5);
+  } else if (level === 4) { 
+    return randomNumberBetween(2,2.5);
+  } else if (level === 5) { 
+    return randomNumberBetween(3,3.5);
+  } else if (level === 6) { 
+    return randomNumberBetween(1,1.5);
+  } else if (level >= 7) { 
+    return randomNumberBetween(1.5,2);
+  } else if (level === 8) { 
+    return randomNumberBetween(2,2.5);
   }
 }
 
@@ -353,15 +459,59 @@ function checkDuplicate() {
   var randomIndex;
   var word;
   var duplicate = true;
-  while(duplicate) {
-    randomIndex = randomIntBetween(0, wordsCSS.length-1);
-    word = wordsCSS[randomIndex];
-    if (pastWords.includes(word) === false) {
-      pastWords.push(word);
-      duplicate = false;
+  console.log(score);
+  console.log(level);
+  if (level <= 2) { 
+    while(duplicate) {
+      randomIndex = randomIntBetween(0, words10Fewer.length-1);
+      word = words10Fewer[randomIndex];
+      if (pastWords.includes(word) === false) {
+        pastWords.push(word);
+        duplicate = false;
+      }
     }
+    return word;
+  } else if (level > 2 && level <= 5) { 
+    while(duplicate) {
+      randomIndex = randomIntBetween(0, wordsBetween10And20.length-1);
+      word = wordsBetween10And20[randomIndex];
+      if (pastWords.includes(word) === false) {
+        pastWords.push(word);
+        duplicate = false;
+      }
+    }
+    return word;
+  } else if (level > 5) { 
+    while(duplicate) {
+      randomIndex = randomIntBetween(0, wordsAbove20.length-1);
+      word = wordsAbove20[randomIndex];
+      if (pastWords.includes(word) === false) {
+        pastWords.push(word);
+        duplicate = false;
+      }
+    }
+    return word; 
   }
-  return word;
+}
+
+function checkLevel() { 
+  if (score > 5) {  
+    level = 1;
+  } if (score > 10) { 
+    level = 2;
+  } if (score > 15) { 
+    level = 3;
+  } if (score > 20) { 
+    level = 4;
+  } if (score > 25) { 
+    level = 5;
+  } if (score > 30) { 
+    level = 6; 
+  } if (score > 35) { 
+    level = 7;
+  } if (score > 40) { 
+    level = 8;
+  }
 }
 
 locationSpawning();
@@ -376,42 +526,14 @@ window.setInterval(() => {
 
 window.setInterval(() => {
   if(newWord.x > canvas.width) {
-    wordReset();
     wordInitialize();
+    score -= 2;
   } else if (newWord2.x > canvas.width) {
-    wordReset();
     word2Initialize();
+    score -= 2;
   } else if (newWord3.x > canvas.width) {
-    wordReset();
     word3Initialize();
+    score -= 2;
   }
 }, 100);
-
-window.addEventListener('keydown', keyPress);
-function keyPress(e) {
-  var key = e.key;
-  var currentLetter = newWord.word.charAt(newWord.letterIndex);
-  if (key === currentLetter) {
-    newWord.letterIndex++;
-  } else if(newWord.letterIndex === newWord.word.length) {
-    score++;
-    console.log(score);
-    if (score === 2) {
-      wordInitialize();
-      word2Initialize();
-      wordReset();
-      window.addEventListener('keydown', keyPress2);
-    } else if (score === 3 || score === 4) {
-      wordInitialize();
-      word3Initialize();
-      wordReset();
-      window.addEventListener('keydown', keyPress3);
-    } else {
-      wordInitialize();
-      wordReset();
-    }
-  }
-}
-
-
 
