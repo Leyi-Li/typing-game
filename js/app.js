@@ -191,8 +191,12 @@ var word3Animation;
 var blackHoleAnimation;
 var explosionAnimation;
 var shrinkingAnimation;
+var showRoundAnimation;
+var showStartingTextAnimation;
 var lives = 3;
 var level = 0;
+var numRound = 0;
+var wordRight = 0;
 
 function wordInitialize() {
   cancelAnimationFrame(wordAnimation);
@@ -245,6 +249,7 @@ function animateWord() {
   newWord.render();
   if (distance(newWord.x, newWord.y, x, y) < eventHorizonRadius) {
     newWord.pathRadius = newWord.pathRadius - 1;
+    newWord.radius -= 20;
   }
   if (distance(newWord.x, newWord.y, x, y) < 20) {
     lives--;
@@ -252,9 +257,7 @@ function animateWord() {
     wordInitialize();
     newWord.letterIndex = 0;
     checkBlackHole();
-    if (lives === 0) {
-      alert('game over');
-    }
+    checkLives();
   }
 }
 
@@ -270,9 +273,7 @@ function animateWord2() {
     word2Initialize();
     newWord2.letterIndex = 0;
     checkBlackHole();
-    if (lives === 0) {
-      alert('game over');
-    }
+    checkLives();
   }
 }
 
@@ -288,9 +289,7 @@ function animateWord3() {
     word3Initialize();
     newWord3.letterIndex = 0;
     checkBlackHole();
-    if (lives === 0) {
-      alert('game over');
-    }
+    checkLives();
   }
 }
 
@@ -388,16 +387,23 @@ function keyPress(e) {
   var currentLetter = newWord.word.charAt(newWord.letterIndex);
   if (key === currentLetter) {
     newWord.letterIndex++;
-  } else if(newWord.letterIndex === newWord.word.length) {
-    score++;
+  }
+  if (newWord.letterIndex === newWord.word.length) {
+    checkScore(newWord.word.length);
+    wordRight++;
     checkLevel();
-    if (score === 5) {
+    if (wordRight === 5) {
       newWord.explode();
+      // window.setTimeout(() => wordInitialize(), 3000);
+      // window.setTimeout(() => word2Initialize(), 4000);
       wordInitialize();
       word2Initialize();
       window.addEventListener('keydown', keyPress2);
-    } else if (score === 10 || score === 11) {
+    } else if (wordRight === 10 || wordRight === 11) {
       newWord.explode();
+      // window.setTimeout(() => wordInitialize(), 3000);
+      // window.setTimeout(() => word2Initialize(), 4000);
+      // window.setTimeout(() => word3Initialize(), 5000);
       wordInitialize();
       word3Initialize();
       window.addEventListener('keydown', keyPress3);
@@ -414,8 +420,10 @@ function keyPress2(e) {
   var currentLetter = newWord2.word.charAt(newWord2.letterIndex);
   if (key === currentLetter) {
     newWord2.letterIndex++;
-  } else if(newWord2.letterIndex === newWord2.word.length) {
-    score++;
+  } 
+  if (newWord2.letterIndex === newWord2.word.length) {
+    checkScore(newWord2.word.length);
+    wordRight++;
     newWord2.explode();
     checkLevel();
     word2Initialize();
@@ -428,8 +436,10 @@ function keyPress3(e) {
   var currentLetter = newWord3.word.charAt(newWord3.letterIndex);
   if (key === currentLetter) {
     newWord3.letterIndex++;
-  } else if(newWord3.letterIndex === newWord3.word.length) {
-    score++;
+  } 
+  if (newWord3.letterIndex === newWord3.word.length) {
+    checkScore(newWord3.word.length);
+    wordRight++;
     newWord3.explode();
     checkLevel();
     word3Initialize();
@@ -514,30 +524,90 @@ function checkDuplicate() {
   }
 }
 
+function checkScore(wordLength) { 
+  if (wordLength < 10) { 
+    score++;
+  } else if (wordLength >= 10 && wordLength < 20) { 
+    score += 2;
+  } else if (wordLength >= 20) { 
+    score += 3;
+  }
+}
+
 function checkLevel() { 
-  if (score > 5) {  
+  if (wordRight === 5) {  
     level = 1;
-  } if (score > 10) { 
+    // numRound++;
+    // showRounds();
+    // window.setTimeout(() => cancelAnimationFrame(showRoundAnimation), 3000);
+  } if (wordRight=== 10) { 
     level = 2;
-  } if (score > 15) { 
+    // numRound++;
+    // showRounds();
+    // window.setTimeout(() => cancelAnimationFrame(showRoundAnimation), 3000);
+  } if (wordRight === 15) { 
     level = 3;
-  } if (score > 20) { 
+  } if (wordRight === 20) { 
     level = 4;
-  } if (score > 25) { 
+  } if (wordRight === 25) { 
     level = 5;
-  } if (score > 30) { 
+  } if (wordRight === 30) { 
     level = 6; 
-  } if (score > 35) { 
+  } if (wordRight === 35) { 
     level = 7;
-  } if (score > 40) { 
+  } if (wordRight === 40) { 
     level = 8;
   }
 }
 
+function checkLives() { 
+  if (lives === 0) { 
+    endPage();
+  }
+}
+
+function endPage() { 
+  cancelAnimationFrame(wordAnimation);
+  cancelAnimationFrame(word2Animation);
+  cancelAnimationFrame(word3Animation);
+
+  requestAnimationFrame(endPage);
+  ctx.font = '30px sans-serif';
+  ctx.fillStyle = 'white';
+  ctx.fillText('Final Score', 150, canvas.height/2 - 200);
+  ctx.fillText('Total Words Correct', 450, canvas.height/2 - 200);
+  ctx.fillStyle = 'aqua';
+  ctx.fillText(`${score}`, 150, canvas.height/2 - 150);
+  ctx.fillText(`${wordRight}`, 450, canvas.height/2 - 150);
+}
+
+function showRounds() { 
+  showRoundAnimation = requestAnimationFrame(showRounds);
+  ctx.font = 'bold 40px sans-serif';
+  ctx.fillStyle = 'white';
+  var words = `ROUND ${numRound} COMPLETE`;
+  var wordsLength = ctx.measureText(words).width/2;
+  ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
+  ctx.font = '15px Helvetica';
+}
+
+function showStartingText() { 
+  showStartingTextAnimation = requestAnimationFrame(showStartingText);
+  ctx.font = 'bold 40px sans-serif';
+  ctx.fillStyle = 'white';
+  var words = 'STOP BLACK HOLE FROM GROWING';
+  var wordsLength = ctx.measureText(words).width/2;
+  ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
+  ctx.font = '15px Helvetica';
+}
+
+
 locationSpawning();
 starInitialize();
 blackHoleInitialize();
-wordInitialize();
+showStartingText();
+window.setTimeout(function() {cancelAnimationFrame(showStartingTextAnimation);}, 5000);
+window.setTimeout(function() {wordInitialize();}, 5000);
 drawScore();
 
 window.setInterval(() => {
