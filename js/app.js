@@ -246,6 +246,7 @@ function spawnNewWord3() {
 }
 
 function spawnBossWord() { 
+  var word = checkDuplicate();
   
 }
 
@@ -519,6 +520,16 @@ function checkDuplicate() {
       }
     }
     return word; 
+  } else if (wordRight > 50) { 
+    while(duplicate) {
+      randomIndex = randomIntBetween(0, wordsAbove20.length-1);
+      word = wordsAbove20[randomIndex];
+      if (pastWords.includes(word) === false) {
+        pastWords.push(word);
+        duplicate = false;
+      }
+    }
+    return word; 
   }
 }
 
@@ -565,11 +576,11 @@ function endPage() {
   requestAnimationFrame(endPage);
   ctx.font = '30px sans-serif';
   ctx.fillStyle = 'white';
-  ctx.fillText('Final Score', 150, canvas.height/2 - 200);
-  ctx.fillText('Total Words Correct', 450, canvas.height/2 - 200);
+  ctx.fillText('Final Score', 150, canvas.height/2 - 300);
+  ctx.fillText('Total Words Correct', 450, canvas.height/2 - 300);
   ctx.fillStyle = 'aqua';
-  ctx.fillText(`${score}`, 150, canvas.height/2 - 150);
-  ctx.fillText(`${wordRight}`, 450, canvas.height/2 - 150);
+  ctx.fillText(`${score}`, 150, canvas.height/2 - 250);
+  ctx.fillText(`${wordRight}`, 450, canvas.height/2 - 250);
 
   homePageLink();
 }
@@ -590,15 +601,15 @@ function bossRound() {
   }
 }
 
-function showRounds() { 
-  showRoundAnimation = requestAnimationFrame(showRounds);
-  ctx.font = 'bold 40px sans-serif';
-  ctx.fillStyle = 'white';
-  var words = `ROUND ${numRound} COMPLETE`;
-  var wordsLength = ctx.measureText(words).width/2;
-  ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
-  ctx.font = '15px Helvetica';
-}
+// function showRounds() { 
+//   showRoundAnimation = requestAnimationFrame(showRounds);
+//   ctx.font = 'bold 40px sans-serif';
+//   ctx.fillStyle = 'white';
+//   var words = `ROUND ${numRound} COMPLETE`;
+//   var wordsLength = ctx.measureText(words).width/2;
+//   ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
+//   ctx.font = '15px Helvetica';
+// }
 
 function showStartingText() { 
   showStartingTextAnimation = requestAnimationFrame(showStartingText);
