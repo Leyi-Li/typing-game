@@ -197,6 +197,7 @@ var lives = 3;
 var level = 0;
 var numRound = 0;
 var wordRight = 0;
+var userName;
 
 function wordInitialize() {
   cancelAnimationFrame(wordAnimation);
@@ -563,6 +564,7 @@ function checkLevel() {
 function checkLives() { 
   if (lives === 0) { 
     endPage();
+    addScore();
   }
 }
 
@@ -615,13 +617,13 @@ window.setInterval(() => {
 }, 10);
 
 window.setInterval(() => {
-  if(newWord.x > canvas.width) {
+  if(newWord.x > canvas.width && distance(newWord.x, newWord.y, x, y) > eventHorizonRadius) {
     wordInitialize();
     score -= 2;
-  } else if (newWord2.x > canvas.width) {
+  } else if (newWord2.x > canvas.width && distance(newWord2.x, newWord2.y, x, y) > eventHorizonRadius) {
     word2Initialize();
     score -= 2;
-  } else if (newWord3.x > canvas.width) {
+  } else if (newWord3.x > canvas.width && distance(newWord3.x, newWord3.y, x, y) > eventHorizonRadius) {
     word3Initialize();
     score -= 2;
   }
