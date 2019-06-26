@@ -193,25 +193,28 @@ function word3Initialize() {
 
 function spawnNewWord() {
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
-  var radius = (ctx.measureText(words[randomIndex]).width)/2 + padding;
-  var dx = speedIncrease();
   var word = checkDuplicate();
+  var radius = (ctx.measureText(word.width)/2) + padding;
+  var dx = speedIncrease();
+  
   newWord = new Word(wordX, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
 function spawnNewWord2() {
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
-  var radius = (ctx.measureText(words[randomIndex]).width)/2 + padding;
-  var dx = speedIncrease();
   var word = checkDuplicate();
+  var radius = (ctx.measureText(word.width)/2) + padding;
+  var dx = speedIncrease();
+  
   newWord2 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
 function spawnNewWord3() {
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
-  var radius = (ctx.measureText(words[randomIndex]).width)/2 + padding;
-  var dx = speedIncrease();
   var word = checkDuplicate();
+  var radius = (ctx.measureText(word.width)/2) + padding;
+  var dx = speedIncrease();
+  
   newWord3 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
@@ -317,6 +320,7 @@ function keyPress2(e) {
     newWord2.letterIndex++;
   } else if(newWord2.letterIndex === newWord2.word.length) {
     score++;
+    checkLevel();
     word2Initialize();
     wordReset();
   }
@@ -329,6 +333,7 @@ function keyPress3(e) {
     newWord3.letterIndex++;
   } else if(newWord3.letterIndex === newWord3.word.length) {
     score++;
+    checkLevel();
     word3Initialize();
     wordReset();
   }
@@ -340,11 +345,19 @@ function speedIncrease() {
   } else if (level === 1) { 
     return randomNumberBetween(2,2.5);
   } else if (level === 2) { 
-    return randomNumberBetween(2.5,3);
-  } else if (level === 3) { 
     return randomNumberBetween(3,3.5);
+  } else if (level === 3) { 
+    return randomNumberBetween(1,1.5);
   } else if (level === 4) { 
-    return randomNumberBetween(3.5,4);
+    return randomNumberBetween(2,2.5);
+  } else if (level === 5) { 
+    return randomNumberBetween(3,3.5);
+  } else if (level === 6) { 
+    return randomNumberBetween(1,1.5);
+  } else if (level >= 7) { 
+    return randomNumberBetween(1.5,2);
+  } else if (level === 8) { 
+    return randomNumberBetween(2,2.5);
   }
 }
 
@@ -367,16 +380,59 @@ function checkDuplicate() {
   var randomIndex;
   var word;
   var duplicate = true;
-  // if (level = )
-  while(duplicate) {
-    randomIndex = randomIntBetween(0, words.length-1);
-    word = words[randomIndex];
-    if (pastWords.includes(word) === false) {
-      pastWords.push(word);
-      duplicate = false;
+  console.log(score);
+  console.log(level);
+  if (level <= 2) { 
+    while(duplicate) {
+      randomIndex = randomIntBetween(0, words10Fewer.length-1);
+      word = words10Fewer[randomIndex];
+      if (pastWords.includes(word) === false) {
+        pastWords.push(word);
+        duplicate = false;
+      }
     }
+    return word;
+  } else if (level > 2 && level <= 5) { 
+    while(duplicate) {
+      randomIndex = randomIntBetween(0, wordsBetween10And20.length-1);
+      word = wordsBetween10And20[randomIndex];
+      if (pastWords.includes(word) === false) {
+        pastWords.push(word);
+        duplicate = false;
+      }
+    }
+    return word;
+  } else if (level > 5) { 
+    while(duplicate) {
+      randomIndex = randomIntBetween(0, wordsAbove20.length-1);
+      word = wordsAbove20[randomIndex];
+      if (pastWords.includes(word) === false) {
+        pastWords.push(word);
+        duplicate = false;
+      }
+    }
+    return word; 
   }
-  return word;
+}
+
+function checkLevel() { 
+  if (score > 5) {  
+    level = 1;
+  } if (score > 10) { 
+    level = 2;
+  } if (score > 15) { 
+    level = 3;
+  } if (score > 20) { 
+    level = 4;
+  } if (score > 25) { 
+    level = 5;
+  } if (score > 30) { 
+    level = 6; 
+  } if (score > 35) { 
+    level = 7;
+  } if (score > 40) { 
+    level = 8;
+  }
 }
 
 locationSpawning();
@@ -397,15 +453,6 @@ window.setInterval(() => {
   } else if (newWord3.x > canvas.width) {
     word3Initialize();
   }
-  if (score > 5) { 
-    level = 1;
-  } else if (score > 10) { 
-    level = 2;
-  } else if (score > 15) { 
-    level = 3;
-  } else if (score > 20) { 
-    level = 4;
-  }
 }, 100);
 
 window.addEventListener('keydown', keyPress);
@@ -416,7 +463,7 @@ function keyPress(e) {
     newWord.letterIndex++;
   } else if(newWord.letterIndex === newWord.word.length) {
     score++;
-    console.log(score);
+    checkLevel();
     if (score === 5) {
       wordInitialize();
       word2Initialize();
