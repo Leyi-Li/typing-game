@@ -15,8 +15,7 @@ body{
 
 .playButtons{
     position:float;
-    width: 40vh;
-    /* border:4px solid white; */
+    width: 20%;
     top:0;
     left:0;
 }
