@@ -33,5 +33,9 @@ li {
 }
 
 #homeButton{
-  
+  position: absolute;
+  color: white;  
+  font-family: 'Press Start 2P', cursive;
+  margin-left: 20px;
+  margin-top: 10px;
 }
