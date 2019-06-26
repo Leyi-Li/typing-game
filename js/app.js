@@ -193,7 +193,7 @@ var explosionAnimation;
 var shrinkingAnimation;
 var showRoundAnimation;
 var showStartingTextAnimation;
-var lives = 3;
+var lives = 1;
 var level = 0;
 var numRound = 0;
 var wordRight = 0;
@@ -571,6 +571,9 @@ function endPage() {
   cancelAnimationFrame(wordAnimation);
   cancelAnimationFrame(word2Animation);
   cancelAnimationFrame(word3Animation);
+  removeEventListener('keydown', keyPress);
+  removeEventListener('keydown', keyPress2);
+  removeEventListener('keydown', keyPress3);
 
   requestAnimationFrame(endPage);
   ctx.font = '30px sans-serif';
@@ -580,6 +583,8 @@ function endPage() {
   ctx.fillStyle = 'aqua';
   ctx.fillText(`${score}`, 150, canvas.height/2 - 150);
   ctx.fillText(`${wordRight}`, 450, canvas.height/2 - 150);
+
+  homePageLink();
 }
 
 function showRounds() { 
