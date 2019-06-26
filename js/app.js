@@ -602,7 +602,6 @@ function showStartingText() {
   ctx.font = '15px Helvetica';
 }
 
-
 locationSpawning();
 starInitialize();
 blackHoleInitialize();

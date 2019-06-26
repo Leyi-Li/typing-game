@@ -8,5 +8,6 @@ function addScore() {
       }
     } 
   }
+  playerList.sort(function(a,b) {return b.score - a.score;});
   addToLocalStorage('playerList', playerList);
 }
