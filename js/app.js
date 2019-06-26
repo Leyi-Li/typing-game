@@ -163,6 +163,7 @@ var words = [
   var words10Fewer = words.filter(word => word.length < 10);
   var wordsBetween10And20 = words.filter(word => word.length < 20 && word.length > 10);
   var wordsAbove20 = words.filter(word => word.length > 20);
+  var wordsBossRound = ['for(i=0;i<name.length;i++)'];
 
 var x = window.innerWidth - 200;
 var y = window.innerHeight/2;
@@ -193,7 +194,7 @@ var explosionAnimation;
 var shrinkingAnimation;
 var showRoundAnimation;
 var showStartingTextAnimation;
-var lives = 1;
+var lives = 3;
 var level = 0;
 var numRound = 0;
 var wordRight = 0;
@@ -242,6 +243,10 @@ function spawnNewWord3() {
   var dx = speedIncrease();
   
   newWord3 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
+}
+
+function spawnBossWord() { 
+  
 }
 
 function animateWord() {
@@ -394,16 +399,11 @@ function keyPress(e) {
     checkLevel();
     if (wordRight === 5) {
       newWord.explode();
-      // window.setTimeout(() => wordInitialize(), 3000);
-      // window.setTimeout(() => word2Initialize(), 4000);
       wordInitialize();
       word2Initialize();
       window.addEventListener('keydown', keyPress2);
     } else if (wordRight === 10 || wordRight === 11) {
       newWord.explode();
-      // window.setTimeout(() => wordInitialize(), 3000);
-      // window.setTimeout(() => word2Initialize(), 4000);
-      // window.setTimeout(() => word3Initialize(), 5000);
       wordInitialize();
       word3Initialize();
       window.addEventListener('keydown', keyPress3);
@@ -489,8 +489,6 @@ function checkDuplicate() {
   var randomIndex;
   var word;
   var duplicate = true;
-  console.log(score);
-  console.log(level);
   if (level <= 2) { 
     while(duplicate) {
       randomIndex = randomIntBetween(0, words10Fewer.length-1);
@@ -537,14 +535,8 @@ function checkScore(wordLength) {
 function checkLevel() { 
   if (wordRight === 5) {  
     level = 1;
-    // numRound++;
-    // showRounds();
-    // window.setTimeout(() => cancelAnimationFrame(showRoundAnimation), 3000);
   } if (wordRight=== 10) { 
     level = 2;
-    // numRound++;
-    // showRounds();
-    // window.setTimeout(() => cancelAnimationFrame(showRoundAnimation), 3000);
   } if (wordRight === 15) { 
     level = 3;
   } if (wordRight === 20) { 
@@ -568,12 +560,7 @@ function checkLives() {
 }
 
 function endPage() { 
-  cancelAnimationFrame(wordAnimation);
-  cancelAnimationFrame(word2Animation);
-  cancelAnimationFrame(word3Animation);
-  removeEventListener('keydown', keyPress);
-  removeEventListener('keydown', keyPress2);
-  removeEventListener('keydown', keyPress3);
+  removeWords();
 
   requestAnimationFrame(endPage);
   ctx.font = '30px sans-serif';
@@ -585,6 +572,22 @@ function endPage() {
   ctx.fillText(`${wordRight}`, 450, canvas.height/2 - 150);
 
   homePageLink();
+}
+
+function removeWords() { 
+  cancelAnimationFrame(wordAnimation);
+  cancelAnimationFrame(word2Animation);
+  cancelAnimationFrame(word3Animation);
+  removeEventListener('keydown', keyPress);
+  removeEventListener('keydown', keyPress2);
+  removeEventListener('keydown', keyPress3);
+}
+
+function bossRound() { 
+  if (wordRight > 50) { 
+    removeWords();
+
+  }
 }
 
 function showRounds() { 
