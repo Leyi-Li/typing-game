@@ -152,8 +152,6 @@ var pathRadius = 200;
 var radians = (3 * Math.PI)/4;
 var randomIndex;
 var letterIndex = 0;
-// var letterIndex2 = 0;
-// var letterIndex3 = 0;
 var wordX = 0;
 var wordLength = 0;
 var wordHeight = 5;
@@ -163,6 +161,7 @@ var stars = [];
 var spawnLocation = [];
 var wordsList = [];
 var pastWords = [];
+var explosionPieces = [];
 var newWord;
 var newWord2;
 var newWord3;
@@ -170,6 +169,8 @@ var wordAnimation;
 var word2Animation;
 var word3Animation;
 var blackHoleAnimation;
+var explosionAnimation;
+var shrinkingAnimation;
 var lives = 3;
 var level = 0;
 
@@ -194,7 +195,8 @@ function word3Initialize() {
 function spawnNewWord() {
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
   var word = checkDuplicate();
-  var radius = (ctx.measureText(word.width)/2) + padding;
+  var radius = (ctx.measureText(word).width/2) + padding;
+  console.log(radius);
   var dx = speedIncrease();
   
   newWord = new Word(wordX, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
@@ -203,7 +205,7 @@ function spawnNewWord() {
 function spawnNewWord2() {
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
   var word = checkDuplicate();
-  var radius = (ctx.measureText(word.width)/2) + padding;
+  var radius = (ctx.measureText(word).width/2) + padding;
   var dx = speedIncrease();
   
   newWord2 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
@@ -212,7 +214,7 @@ function spawnNewWord2() {
 function spawnNewWord3() {
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
   var word = checkDuplicate();
-  var radius = (ctx.measureText(word.width)/2) + padding;
+  var radius = (ctx.measureText(word).width/2) + padding;
   var dx = speedIncrease();
   
   newWord3 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
@@ -272,6 +274,17 @@ function animateWord3() {
   }
 }
 
+function animateExplosion() { 
+  explosionAnimation = requestAnimationFrame(animateExplosion);
+  explosionPieces.forEach( (pieces, index) => {
+    pieces.render();
+    if (pieces.time === 0) { 
+      explosionPieces.splice(index, 1);
+    }
+  });
+}
+
+
 function Word(x, y, radius, color, dx, word, pathRadius, letterIndex) {
   this.x = x;
   this.y = y;
@@ -309,10 +322,70 @@ Word.prototype.render = function() {
   }
 };
 
+Word.prototype.explode = function() { 
+  // this.radius -= 10;
+  for(var i = 0; i < 150; i++) { 
+    explosionPieces.push(new Explosion(this.x + this.radius, this.y, randomNumberBetween(1,2), randomColor()));
+  }
+  cancelAnimationFrame(explosionAnimation);
+  animateExplosion();
+};
+
+function Explosion(x, y, radius, color) { 
+  Word.call(this, x, y, radius, color);
+  this.dx = randomNumberBetween(-2,2);
+  this.dy = randomNumberBetween(-2,2);
+  this.time = 60;
+  this.opacity = 1;
+}
+
+Explosion.prototype.draw = function() {
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI, false);
+  ctx.fillStyle = `rgba(${randomIntBetween(0,255)}, ${randomIntBetween(0,255)}, ${randomIntBetween(0,255)}, ${this.opacity})`;
+  ctx.fill();
+  ctx.closePath();
+};
+
+Explosion.prototype.render = function() {
+  this.draw();
+  this.x += this.dx;
+  this.y += this.dy;
+  this.time -= 1;
+  this.opacity -= 1 /this.time;
+};
+
 function locationSpawning() {
   var locationAmount = Math.floor(canvas.height/10);
   for(var i = 2; i <= 9; i++) {
     spawnLocation.push(locationAmount * i);
+  }
+}
+
+window.addEventListener('keydown', keyPress);
+function keyPress(e) {
+  var key = e.key;
+  var currentLetter = newWord.word.charAt(newWord.letterIndex);
+  if (key === currentLetter) {
+    newWord.letterIndex++;
+  } else if(newWord.letterIndex === newWord.word.length) {
+    score++;
+    checkLevel();
+    if (score === 5) {
+      newWord.explode();
+      wordInitialize();
+      word2Initialize();
+      window.addEventListener('keydown', keyPress2);
+    } else if (score === 10 || score === 11) {
+      newWord.explode();
+      wordInitialize();
+      word3Initialize();
+      window.addEventListener('keydown', keyPress3);
+    } else {
+      newWord.explode();
+      wordInitialize();
+      wordReset();
+    }
   }
 }
 
@@ -323,6 +396,7 @@ function keyPress2(e) {
     newWord2.letterIndex++;
   } else if(newWord2.letterIndex === newWord2.word.length) {
     score++;
+    newWord2.explode();
     checkLevel();
     word2Initialize();
     wordReset();
@@ -336,7 +410,9 @@ function keyPress3(e) {
     newWord3.letterIndex++;
   } else if(newWord3.letterIndex === newWord3.word.length) {
     score++;
+    newWord3.explode();
     checkLevel();
+    word3Initialize();
     word3Initialize();
     wordReset();
   }
@@ -443,7 +519,6 @@ starInitialize();
 blackHoleInitialize();
 wordInitialize();
 drawScore();
-// addImage();
 
 window.setInterval(() => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -452,33 +527,13 @@ window.setInterval(() => {
 window.setInterval(() => {
   if(newWord.x > canvas.width) {
     wordInitialize();
+    score -= 2;
   } else if (newWord2.x > canvas.width) {
     word2Initialize();
+    score -= 2;
   } else if (newWord3.x > canvas.width) {
     word3Initialize();
+    score -= 2;
   }
 }, 100);
 
-window.addEventListener('keydown', keyPress);
-function keyPress(e) {
-  var key = e.key;
-  var currentLetter = newWord.word.charAt(newWord.letterIndex);
-  if (key === currentLetter) {
-    newWord.letterIndex++;
-  } else if(newWord.letterIndex === newWord.word.length) {
-    score++;
-    checkLevel();
-    if (score === 5) {
-      wordInitialize();
-      word2Initialize();
-      window.addEventListener('keydown', keyPress2);
-    } else if (score === 10 || score === 11) {
-      wordInitialize();
-      word3Initialize();
-      window.addEventListener('keydown', keyPress3);
-    } else {
-      wordInitialize();
-      wordReset();
-    }
-  }
-}
