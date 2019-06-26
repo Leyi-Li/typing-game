@@ -16,10 +16,13 @@
     <header class="twinkling">
     </header>
     <main class="clouds">
-                <audio id="player" controls autostart="true">
-                    <source src="./music/10 Arpanauts.mp3" type="audio/mp3">
-                    Your browser does not support the audio tag.
-                </audio>​​​
+        <div class = "playButtons">
+            <button class="buttonOne" type="button" onclick="musicPlay()">Play</button>
+            <button type="button" onclick="musicPause()">Pause</button>
+            <audio id="player" autoplay>
+            <source src="music/10 Arpanauts.mp3" />
+            </audio>
+        </div>
         <div class="welcome">
             <p id = "welcomeWords"></p>
         </div>   
@@ -37,6 +40,7 @@
     <footer>
         <p class="about"><a href="aboutMe.html"> About </a></p>
     </footer>
+    <script type="text/javascript" src="js/audioControl.js"></script>
     <script type= "text/javascript" src="js/utils.js"></script>
     <script type ="text/javascript" src="./js/getName.js"></script>
 </body>
