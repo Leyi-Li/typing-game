@@ -226,6 +226,7 @@ function animateWord() {
   }
   if (distance(newWord.x, newWord.y, x, y) < 20) {
     lives--;
+    drawBox();
     wordInitialize();
     newWord.letterIndex = 0;
     checkBlackHole();
@@ -243,6 +244,7 @@ function animateWord2() {
   }
   if (distance(newWord2.x, newWord2.y, x, y) < 20) {
     lives--;
+    drawBox();
     word2Initialize();
     newWord2.letterIndex = 0;
     checkBlackHole();
@@ -260,6 +262,7 @@ function animateWord3() {
   }
   if (distance(newWord3.x, newWord3.y, x, y) < 20) {
     lives--;
+    drawBox();
     word3Initialize();
     newWord3.letterIndex = 0;
     checkBlackHole();
@@ -323,13 +326,6 @@ function keyPress2(e) {
     checkLevel();
     word2Initialize();
     wordReset();
-    wordInitialize();
-    lives--;
-    // updateLives();
-    drawBox();
-    if (lives === 0) { 
-      alert('game over');
-    }
   }
 }
 
@@ -343,17 +339,6 @@ function keyPress3(e) {
     checkLevel();
     word3Initialize();
     wordReset();
-  }
-
-  if (distance(newWord2.x, newWord2.y, x, y) < 20) {
-    wordReset2();
-    word2Initialize();
-    lives--;
-    // updateLives();
-    drawBox();
-    if (lives === 0) { 
-      alert('game over');
-    }
   }
 }
 
@@ -391,17 +376,6 @@ function checkBlackHole() {
     biggerBlackHoleInitialize();
   } else if (lives === 1) {
     biggestBlackHoleInitialize();
-  }
-
-  if (distance(newWord3.x, newWord3.y, x, y) < 20) {
-    wordReset3();
-    word3Initialize();
-    lives--;
-    // updateLives();
-    drawBox();
-    if (lives === 0) { 
-      alert('game over');
-    }
   }
 }
 
