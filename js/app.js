@@ -354,6 +354,7 @@ function keyPress3(e) {
     if (lives === 0) { 
       alert('game over');
     }
+  }
 }
 
 function speedIncrease() { 
@@ -375,7 +376,6 @@ function speedIncrease() {
     return randomNumberBetween(1.5,2);
   } else if (level === 8) { 
     return randomNumberBetween(2,2.5);
-
   }
 }
 
@@ -401,6 +401,8 @@ function checkBlackHole() {
     drawBox();
     if (lives === 0) { 
       alert('game over');
+    }
+  }
 }
 
 function checkDuplicate() {
@@ -506,6 +508,3 @@ function keyPress(e) {
     }
   }
 }
-
-
-
