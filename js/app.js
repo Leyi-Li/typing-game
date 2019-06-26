@@ -138,7 +138,27 @@ var words = [
   'element.setAttribute',
   'function',
   'object',
-  'prototype'];
+  'prototype',
+  'for(i=0;i<name.length;i++)',
+  'ctx.stroke',
+  'ctx.createlinearGradient',
+  'console.log()',
+  'Math.floor',
+  '<figcaption></figcaption>',
+  'BossQuangIsTheCoolestGuyInTown',
+  'border-bottom-right-radius',
+  'border-bottom-left-radius',
+  'background-position-x',
+  'background-position-y',
+  'border-top-right-radius',
+  'border-top-left-radius',
+  'background-attachment:scroll',
+  'background-attachment:fixed',
+  'background-color:rgba(255,255,128,.5)',
+  'border-image-width:30px',
+  'box-shadow',
+  'instanceName.constructor.name',
+  'Boolean.prototype.constructor'];
 
   var words10Fewer = words.filter(word => word.length < 10);
   var wordsBetween10And20 = words.filter(word => word.length < 20 && word.length > 10);
