@@ -197,7 +197,6 @@ var lives = 3;
 var level = 0;
 var numRound = 0;
 var wordRight = 0;
-var userName;
 
 function wordInitialize() {
   cancelAnimationFrame(wordAnimation);
