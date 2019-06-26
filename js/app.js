@@ -261,6 +261,8 @@ function animateWord() {
     wordReset();
     wordInitialize();
     lives--;
+    // updateLives();
+    drawBox();
     if (lives === 0) { 
       alert('game over');
     }
@@ -277,6 +279,8 @@ function animateWord2() {
     wordReset2();
     word2Initialize();
     lives--;
+    // updateLives();
+    drawBox();
     if (lives === 0) { 
       alert('game over');
     }
@@ -293,6 +297,8 @@ function animateWord3() {
     wordReset3();
     word3Initialize();
     lives--;
+    // updateLives();
+    drawBox();
     if (lives === 0) { 
       alert('game over');
     }
@@ -311,6 +317,7 @@ starInitialize();
 blackHoleInitialize();
 wordInitialize();
 drawScore();
+// addImage();
 
 window.setInterval(() => { 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
