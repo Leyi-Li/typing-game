@@ -4,7 +4,7 @@ var ctx = document.getElementById('game').getContext('2d');
 var canvas = document.getElementById('game');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-ctx.font = '15px Helvetica';
+ctx.font = '15px "Press Start 2P"';
 var words = [
   '<!DOCTYPE>',
   '<a>',
@@ -576,35 +576,36 @@ function endPage() {
   removeEventListener('keydown', keyPress3);
 
   requestAnimationFrame(endPage);
-  ctx.font = '30px sans-serif';
+  ctx.font = '30px "Press Start 2P"';
   ctx.fillStyle = 'white';
   ctx.fillText('Final Score', 150, canvas.height/2 - 200);
-  ctx.fillText('Total Words Correct', 450, canvas.height/2 - 200);
+  ctx.fillText('Total Words Correct', 490, canvas.height/2 - 200);
   ctx.fillStyle = 'aqua';
   ctx.fillText(`${score}`, 150, canvas.height/2 - 150);
-  ctx.fillText(`${wordRight}`, 450, canvas.height/2 - 150);
+  ctx.fillText(`${wordRight}`, 490, canvas.height/2 - 150);
 
   homePageLink();
+
 }
 
 function showRounds() { 
   showRoundAnimation = requestAnimationFrame(showRounds);
-  ctx.font = 'bold 40px sans-serif';
+  ctx.font = 'bold 40px "Press Start 2P"';
   ctx.fillStyle = 'white';
   var words = `ROUND ${numRound} COMPLETE`;
   var wordsLength = ctx.measureText(words).width/2;
   ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
-  ctx.font = '15px Helvetica';
+  ctx.font = '15px "Press Start 2P"';
 }
 
 function showStartingText() { 
   showStartingTextAnimation = requestAnimationFrame(showStartingText);
-  ctx.font = 'bold 40px sans-serif';
+  ctx.font = 'bold 40px "Press Start 2P"';
   ctx.fillStyle = 'white';
   var words = 'STOP BLACK HOLE FROM GROWING';
   var wordsLength = ctx.measureText(words).width/2;
   ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
-  ctx.font = '15px Helvetica';
+  ctx.font = '15px "Press Start 2P"';
 }
 
 locationSpawning();
