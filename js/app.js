@@ -195,6 +195,7 @@ var explosionAnimation;
 var shrinkingAnimation;
 var showRoundAnimation;
 var showStartingTextAnimation;
+var pausedAnimation;
 var lives = 3;
 var level = 0;
 var numRound = 0;
@@ -681,9 +682,20 @@ function pause() {
   newWord={};
   newWord2={};
   newWord3={};
+  showGamePaused();
+}
+
+function showGamePaused() { 
+  pausedAnimation = requestAnimationFrame(showGamePaused);
+  ctx.font = 'bold 30px "Press Start 2P"';
+  ctx.fillStyle = 'white';
+  var words = 'Game Paused';
+  var wordsLength = ctx.measureText(words).width/2;
+  ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
 }
 
 function resume() {
+  cancelAnimationFrame(pausedAnimation);
   paused = false;
   console.log('inside resume');
   var lsgWord1 = localStorage.getItem('word1');
