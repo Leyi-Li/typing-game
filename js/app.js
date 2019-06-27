@@ -163,8 +163,8 @@ var words = [
 
 var words10Fewer = words.filter(word => word.length < 10);
 var wordsBetween10And20 = words.filter(word => word.length < 20 && word.length > 10);
-var wordsAbove20 = words.filter(word => word.length > 20);
-var wordsBossRound = words.filter(word => word.length > 30);
+var wordsAbove20 = words.filter(word => word.length > 20 && word.length < 30);
+var wordsBossRound = words.filter(word => word.length >= 30);
 
 var x = window.innerWidth - 200;
 var y = window.innerHeight/2;
@@ -195,6 +195,7 @@ var explosionAnimation;
 var shrinkingAnimation;
 var showRoundAnimation;
 var showStartingTextAnimation;
+var pausedAnimation;
 var lives = 3;
 var level = 0;
 var numRound = 0;
@@ -204,7 +205,6 @@ function wordInitialize() {
   cancelAnimationFrame(wordAnimation);
   spawnNewWord();
   animateWord();
-  console.log(animateWord, '???');
 }
 
 function word2Initialize() {
@@ -258,7 +258,6 @@ function animateWord() {
   if (distance(newWord.x, newWord.y, x, y) < 20) {
     lives--;
     drawBox();
-    // wordInitialize();
     if(paused === false){
       wordInitialize();
     }
@@ -280,7 +279,6 @@ function animateWord2() {
   if (distance(newWord2.x, newWord2.y, x, y) < 20) {
     lives--;
     drawBox();
-    // word2Initialize();
     if(paused === false){
       word2Initialize();
     }
@@ -302,7 +300,6 @@ function animateWord3() {
   if (distance(newWord3.x, newWord3.y, x, y) < 20) {
     lives--;
     drawBox();
-    // word3Initialize();
     if(paused === false){
       word3Initialize();
     }
@@ -420,20 +417,15 @@ function keyPress(e) {
       newWord.explode();
       if(paused === false) {wordInitialize();}
       if(paused === false) {word2Initialize();}
-      // wordInitialize();
-      // word2Initialize();
       window.addEventListener('keydown', keyPress2);
     } else if (wordRight === 10 || wordRight === 11) {
       newWord.explode();
       if(paused === false) {wordInitialize();}
       if(paused === false) {word3Initialize();}
-      // wordInitialize();
-      // word3Initialize();
       window.addEventListener('keydown', keyPress3);
     } else {
       newWord.explode();
       if(paused === false) {wordInitialize();}
-      // wordInitialize();
       wordReset();
     }
   }
@@ -645,15 +637,12 @@ window.setInterval(() => {
 window.setInterval(() => {
     
   if(newWord.x > canvas.width && distance(newWord.x, newWord.y, x, y) > eventHorizonRadius) {
-    // wordInitialize();
     if(paused === false) {wordInitialize();}
     score -= 2;
   } else if (newWord2.x > canvas.width && distance(newWord2.x, newWord2.y, x, y) > eventHorizonRadius) {
-    // word2Initialize();
     if(paused === false) {word2Initialize();}
     score -= 2;
   } else if (newWord3.x > canvas.width && distance(newWord3.x, newWord3.y, x, y) > eventHorizonRadius) {
-    // word3Initialize();
     if(paused === false) {word3Initialize();}
     score -= 2;
   }
@@ -681,9 +670,20 @@ function pause() {
   newWord={};
   newWord2={};
   newWord3={};
+  showGamePaused();
+}
+
+function showGamePaused() { 
+  pausedAnimation = requestAnimationFrame(showGamePaused);
+  ctx.font = 'bold 30px "Press Start 2P"';
+  ctx.fillStyle = 'white';
+  var words = 'Game Paused';
+  var wordsLength = ctx.measureText(words).width/2;
+  ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
 }
 
 function resume() {
+  cancelAnimationFrame(pausedAnimation);
   paused = false;
   console.log('inside resume');
   var lsgWord1 = localStorage.getItem('word1');
