@@ -12,6 +12,22 @@ body{
     line-height: 70px;
 }
 
+.playButtons{
+    position:float;
+    width: 50vh;
+    top:0;
+    left:0;
+}
+
+button{
+    background-color: transparent;
+    margin:none;
+    border:1px dashed white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 20px;
+    margin:10px;
+    padding:4px;
+}
 
 .welcome{
     font-size:2em;
@@ -19,10 +35,7 @@ body{
     margin-bottom: 30px;
 }
 
-
-
-
-   a {
+a {
     position: relative;
     text-decoration: none;
     width: 270px;
@@ -33,11 +46,11 @@ body{
     text-transform: uppercase;
     letter-spacing: 4px;
     background-color:none;
-   }
+}
 
-   a:hover{
-       text-decoration: underline;
-   }
+a:hover{
+text-decoration: underline;
+}
 
 .instruction{
     border:2px dashed whitesmoke;
@@ -48,7 +61,7 @@ body{
 footer{
     position: absolute;
     z-index: 4;
-    height:10%;
+    height:15%;
     width:100%;
     bottom: 0;
     text-align: center;
@@ -56,11 +69,24 @@ footer{
     padding: 20px;
 }
 
-#player {
-    width:150px;
+#welcomeWords { 
     position: relative;
-    float: left;
-    left:0;
-    top:0;
-    height:30px;
-  }
+}
+
+#welcomeWords::after {
+    content: ""; 
+    position: absolute;
+    width: 1px;
+    height: 90%;
+    border-right: 2px solid white;
+    animation: blink 0.5s infinite ease;
+}
+
+@keyframes blink { 
+    0% { 
+        opacity: 0;
+    }
+    100% { 
+        opacity: 1;
+    }
+}

@@ -37,8 +37,8 @@ TBD<!--Let people know how they can contribute into your project. A [contributin
 ## Credits
 
 [This blog post](https://medium.com/@meakaakka/a-beginners-guide-to-writing-a-kickass-readme-7ac01da88ab3) helped me build this README.md page.
-[This page](https://choosealicense.com/licenses/mit/) gave me the language for the MIT license information below.
-[This page](https://meyerweb.com/eric/tools/css/reset/) gave me the code to do a css reset.
+[This page](https://codepen.io/WebSonick/pen/vjmgu) gave me the background for front page and about-me page.
+[Eric Skiff Music](https://ericskiff.com/music/) gave us the music for free.
 
 
 ## License

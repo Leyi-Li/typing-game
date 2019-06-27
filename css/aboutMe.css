@@ -1,15 +1,18 @@
 @import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
 
+
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Press Start 2P', cursive;
+  font-family:'Press Start 2P', cursive;
+
 }
 
 .team-section {
   overflow: hidden;
   text-align: center;
   padding: 60px;
+
 }
 
 .team-section h1 {
@@ -59,6 +62,7 @@
   text-align: justify;
   height: 0;
   overflow: hidden;
+  margin-bottom: 10px;
 }
 
 .section:target{
@@ -84,3 +88,4 @@ nav > ul > li > a{
   text-decoration: none;
   color:white;
 }
+

@@ -4,7 +4,7 @@ var ctx = document.getElementById('game').getContext('2d');
 var canvas = document.getElementById('game');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-ctx.font = '15px Helvetica';
+ctx.font = '15px "Press Start 2P"';
 var words = [
   '<!DOCTYPE>',
   '<a>',
@@ -138,11 +138,33 @@ var words = [
   'element.setAttribute',
   'function',
   'object',
-  'prototype'];
+  'prototype',
+  'for(i=0;i<name.length;i++)',
+  'ctx.stroke',
+  'ctx.createlinearGradient',
+  'console.log()',
+  'Math.floor',
+  '<figcaption></figcaption>',
+  'BossQuangIsTheCoolestGuyInTown',
+  'border-bottom-right-radius',
+  'border-bottom-left-radius',
+  'background-position-x',
+  'background-position-y',
+  'border-top-right-radius',
+  'border-top-left-radius',
+  'background-attachment:scroll',
+  'background-attachment:fixed',
+  'background-color:rgba(255,255,128,.5)',
+  'border-image-width:30px',
+  'box-shadow',
+  'instanceName.constructor.name',
+  'Boolean.prototype.constructor'];
+
 
 var words10Fewer = words.filter(word => word.length < 10);
 var wordsBetween10And20 = words.filter(word => word.length < 20 && word.length > 10);
 var wordsAbove20 = words.filter(word => word.length > 20);
+var wordsBossRound = words.filter(word => word.length > 30);
 
 var x = window.innerWidth - 200;
 var y = window.innerHeight/2;
@@ -152,6 +174,7 @@ var pathRadius = 200;
 var radians = (3 * Math.PI)/4;
 var randomIndex;
 var letterIndex = 0;
+var index = 0;
 var wordX = 0;
 var wordLength = 0;
 var wordHeight = 5;
@@ -159,7 +182,6 @@ var padding = 5;
 var particles = [];
 var stars = [];
 var spawnLocation = [];
-var wordsList = [];
 var pastWords = [];
 var explosionPieces = [];
 var newWord;
@@ -171,8 +193,12 @@ var word3Animation;
 var blackHoleAnimation;
 var explosionAnimation;
 var shrinkingAnimation;
+var showRoundAnimation;
+var showStartingTextAnimation;
 var lives = 3;
 var level = 0;
+var numRound = 0;
+var wordRight = 0;
 
 function wordInitialize() {
   cancelAnimationFrame(wordAnimation);
@@ -229,6 +255,7 @@ function animateWord() {
   // console.log(newWord.x, 'X', newWord.y, 'y');
   if (distance(newWord.x, newWord.y, x, y) < eventHorizonRadius) {
     newWord.pathRadius = newWord.pathRadius - 1;
+    newWord.radius -= 20;
   }
   if (distance(newWord.x, newWord.y, x, y) < 20) {
     lives--;
@@ -236,9 +263,7 @@ function animateWord() {
     if(paused === false) wordInitialize();
     newWord.letterIndex = 0;
     checkBlackHole();
-    if (lives === 0) {
-      alert('game over');
-    }
+    checkLives();
   }
 }
 
@@ -255,9 +280,7 @@ function animateWord2() {
     word2Initialize();
     newWord2.letterIndex = 0;
     checkBlackHole();
-    if (lives === 0) {
-      alert('game over');
-    }
+    checkLives();
   }
 }
 
@@ -274,9 +297,7 @@ function animateWord3() {
     word3Initialize();
     newWord3.letterIndex = 0;
     checkBlackHole();
-    if (lives === 0) {
-      alert('game over');
-    }
+    checkLives();
   }
 }
 
@@ -289,7 +310,6 @@ function animateExplosion() {
     }
   });
 }
-
 
 function Word(x, y, radius, color, dx, word, pathRadius, letterIndex) {
   this.x = x;
@@ -381,15 +401,17 @@ function keyPress(e) {
 
   if (key === currentLetter) {
     newWord.letterIndex++;
-  } else if(newWord.letterIndex === newWord.word.length) {
-    score++;
+  }
+  if (newWord.letterIndex === newWord.word.length) {
+    checkScore(newWord.word.length);
+    wordRight++;
     checkLevel();
-    if (score === 5) {
+    if (wordRight === 5) {
       newWord.explode();
       if(paused === false) {wordInitialize();}
       word2Initialize();
-      // window.addEventListener('keydown', keyPress2);
-    } else if (score === 10 || score === 11) {
+      window.addEventListener('keydown', keyPress2);
+    } else if (wordRight === 10 || wordRight === 11) {
       newWord.explode();
       if(paused === false) { wordInitialize();}
       word3Initialize();
@@ -407,8 +429,10 @@ function keyPress2(e) {
   var currentLetter = newWord2.word.charAt(newWord2.letterIndex);
   if (key === currentLetter) {
     newWord2.letterIndex++;
-  } else if(newWord2.letterIndex === newWord2.word.length) {
-    score++;
+  } 
+  if (newWord2.letterIndex === newWord2.word.length) {
+    checkScore(newWord2.word.length);
+    wordRight++;
     newWord2.explode();
     checkLevel();
     word2Initialize();
@@ -421,13 +445,15 @@ function keyPress3(e) {
   var currentLetter = newWord3.word.charAt(newWord3.letterIndex);
   if (key === currentLetter) {
     newWord3.letterIndex++;
-  } else if(newWord3.letterIndex === newWord3.word.length) {
-    score++;
+  } 
+  if (newWord3.letterIndex === newWord3.word.length) {
+    checkScore(newWord3.word.length);
+    wordRight++;
     newWord3.explode();
     checkLevel();
     word3Initialize();
-    word3Initialize();
     wordReset();
+    bossRound();
   }
 }
 
@@ -442,14 +468,16 @@ function speedIncrease() {
     return randomNumberBetween(1,1.5);
   } else if (level === 4) {
     return randomNumberBetween(2,2.5);
-  } else if (level === 5) {
-    return randomNumberBetween(3,3.5);
-  } else if (level === 6) {
+  } else if (level === 5) { 
+    return randomNumberBetween(2.5,3);
+  } else if (level === 6) { 
     return randomNumberBetween(1,1.5);
-  } else if (level >= 7) {
+  } else if (level === 7) {
     return randomNumberBetween(1.5,2);
   } else if (level === 8) {
     return randomNumberBetween(2,2.5);
+  } else if (level === 9) {
+    return randomNumberBetween(1.5,2);
   }
 }
 
@@ -472,9 +500,7 @@ function checkDuplicate() {
   var randomIndex;
   var word;
   var duplicate = true;
-  console.log(score);
-  console.log(level);
-  if (level <= 2) {
+  if (level <= 2) { 
     while(duplicate) {
       randomIndex = randomIntBetween(0, words10Fewer.length-1);
       word = words10Fewer[randomIndex];
@@ -503,33 +529,100 @@ function checkDuplicate() {
         duplicate = false;
       }
     }
-    return word;
+
+    return word; 
+  } else if (wordRight > 50) { 
+    while(duplicate) {
+      randomIndex = randomIntBetween(0, wordsBossRound.length-1);
+      word = wordsBossRound[randomIndex];
+      if (pastWords.includes(word) === false) {
+        pastWords.push(word);
+        duplicate = false;
+      }
+    }
+    return word; 
   }
 }
 
-function checkLevel() {
-  if (score > 5) {
-    level = 1;
-  } if (score > 10) {
-    level = 2;
-  } if (score > 15) {
-    level = 3;
-  } if (score > 20) {
-    level = 4;
-  } if (score > 25) {
-    level = 5;
-  } if (score > 30) {
-    level = 6;
-  } if (score > 35) {
-    level = 7;
-  } if (score > 40) {
-    level = 8;
+function checkScore(wordLength) { 
+  if (wordLength < 10) { 
+    score++;
+  } else if (wordLength >= 10 && wordLength < 20) { 
+    score += 2;
+  } else if (wordLength >= 20) { 
+    score += 3;
   }
+}
+
+function checkLevel() { 
+  if (wordRight === 5) {  
+    level = 1;
+  } if (wordRight=== 10) { 
+    level = 2;
+  } if (wordRight === 15) { 
+    level = 3;
+  } if (wordRight === 20) { 
+    level = 4;
+  } if (wordRight === 25) { 
+    level = 5;
+  } if (wordRight === 30) { 
+    level = 6; 
+  } if (wordRight === 35) { 
+    level = 7;
+  } if (wordRight === 40) { 
+    level = 8;
+  } if (wordRight === 50) { 
+    level = 9;
+  }
+}
+
+function checkLives() { 
+  if (lives === 0) { 
+    endPage();
+    addScore();
+  }
+}
+
+function endPage() { 
+  removeWords();
+
+  requestAnimationFrame(endPage);
+  ctx.font = '30px "Press Start 2P"';
+  ctx.fillStyle = 'white';
+  ctx.fillText('Final Score', 150, canvas.height/2 - 200);
+  ctx.fillText('Total Words Correct', 490, canvas.height/2 - 200);
+  ctx.fillStyle = 'aqua';
+  ctx.fillText(`${score}`, 150, canvas.height/2 - 150);
+  ctx.fillText(`${wordRight}`, 490, canvas.height/2 - 150);
+  homePageLink();
+}
+
+
+function removeWords() { 
+  cancelAnimationFrame(wordAnimation);
+  cancelAnimationFrame(word2Animation);
+  cancelAnimationFrame(word3Animation);
+  removeEventListener('keydown', keyPress);
+  removeEventListener('keydown', keyPress2);
+  removeEventListener('keydown', keyPress3);
+}
+
+function showStartingText() { 
+  showStartingTextAnimation = requestAnimationFrame(showStartingText);
+  ctx.font = 'bold 40px "Press Start 2P"';
+  ctx.fillStyle = 'white';
+  var words = 'STOP BLACK HOLE FROM GROWING';
+  var wordsLength = ctx.measureText(words).width/2;
+  ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
+  ctx.font = '15px "Press Start 2P"';
 }
 
 locationSpawning();
 starInitialize();
 blackHoleInitialize();
+showStartingText();
+window.setTimeout(function() {cancelAnimationFrame(showStartingTextAnimation);}, 5000);
+window.setTimeout(function() {wordInitialize();}, 5000);
 if(paused === false) wordInitialize();
 drawScore();
 
@@ -538,13 +631,15 @@ window.setInterval(() => {
 }, 10);
 
 window.setInterval(() => {
-  if(newWord.x > canvas.width) {
+    
+  if(newWord.x > canvas.width && distance(newWord.x, newWord.y, x, y) > eventHorizonRadius) {
+    wordInitialize();
     if(paused === false) wordInitialize();
     score -= 2;
-  } else if (newWord2.x > canvas.width) {
+  } else if (newWord2.x > canvas.width && distance(newWord2.x, newWord2.y, x, y) > eventHorizonRadius) {
     word2Initialize();
     score -= 2;
-  } else if (newWord3.x > canvas.width) {
+  } else if (newWord3.x > canvas.width && distance(newWord3.x, newWord3.y, x, y) > eventHorizonRadius) {
     word3Initialize();
     score -= 2;
   }
