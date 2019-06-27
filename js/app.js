@@ -184,6 +184,7 @@ var stars = [];
 var spawnLocation = [];
 var pastWords = [];
 var explosionPieces = [];
+var pastLocation = [];
 var newWord;
 var newWord2;
 var newWord3;
@@ -196,7 +197,7 @@ var shrinkingAnimation;
 var showRoundAnimation;
 var showStartingTextAnimation;
 var pausedAnimation;
-var lives = 3;
+var lives = 1;
 var level = 0;
 var numRound = 0;
 var wordRight = 0;
@@ -220,7 +221,7 @@ function word3Initialize() {
 }
 
 function spawnNewWord() {
-  var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
+  var y = chooseLocation();
   var word = checkDuplicate();
   var radius = (ctx.measureText(word).width/2) + padding;
   var dx = speedIncrease();
@@ -229,7 +230,7 @@ function spawnNewWord() {
 }
 
 function spawnNewWord2() {
-  var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
+  var y = chooseLocation();
   var word = checkDuplicate();
   var radius = (ctx.measureText(word).width/2) + padding;
   var dx = speedIncrease();
@@ -238,7 +239,7 @@ function spawnNewWord2() {
 }
 
 function spawnNewWord3() {
-  var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
+  var y = chooseLocation();
   var word = checkDuplicate();
   var radius = (ctx.measureText(word).width/2) + padding;
   var dx = speedIncrease();
@@ -395,11 +396,27 @@ function locationSpawning() {
   }
 }
 
+function chooseLocation() { 
+  var duplicate = true;
+  var location;
+  while(duplicate) {
+    randomIndex = randomIntBetween(0, spawnLocation.length-1);
+    location = spawnLocation[randomIndex];
+    if (pastLocation.length === spawnLocation.length) { 
+      pastLocation = [];
+    }
+    if (pastLocation.includes(location) === false) {
+      pastLocation.push(location);
+      duplicate = false;
+    }
+  }
+  return spawnLocation[randomIndex];
+}
+
 window.addEventListener('keydown', keyPress);
 
 function keyPress(e) {
   var key = e.key;
-  console.log(key, 'key press');
   if (key === 'Escape') {
     pauseGameKeyHandler();
     return;
@@ -422,6 +439,7 @@ function keyPress(e) {
       newWord.explode();
       if(paused === false) {wordInitialize();}
       if(paused === false) {word3Initialize();}
+      wordReset();
       window.addEventListener('keydown', keyPress3);
     } else {
       newWord.explode();
@@ -471,7 +489,7 @@ function speedIncrease() {
   } else if (level === 2) {
     return randomNumberBetween(3,3.5);
   } else if (level === 3) {
-    return randomNumberBetween(1,1.5);
+    return randomNumberBetween(1.5,2);
   } else if (level === 4) {
     return randomNumberBetween(2,2.5);
   } else if (level === 5) { 
@@ -484,6 +502,8 @@ function speedIncrease() {
     return randomNumberBetween(2,2.5);
   } else if (level === 9) {
     return randomNumberBetween(1.5,2);
+  } else if (level === 10) {
+    return randomNumberBetween(2,2.5);
   }
 }
 
@@ -578,6 +598,8 @@ function checkLevel() {
     level = 8;
   } if (wordRight === 50) { 
     level = 9;
+  } if (wordRight === 55) { 
+    level = 10;
   }
 }
 
@@ -594,11 +616,11 @@ function endPage() {
   requestAnimationFrame(endPage);
   ctx.font = '20px "Press Start 2P"';
   ctx.fillStyle = 'white';
-  ctx.fillText('Final Score', 100, canvas.height/2 - 200);
-  ctx.fillText('Total Words Correct', 450, canvas.height/2 - 200);
+  ctx.fillText('Final Score', 100, canvas.height/2 - 150);
+  ctx.fillText('Total Words Correct', 450, canvas.height/2 - 150);
   ctx.fillStyle = 'aqua';
-  ctx.fillText(`${score}`, 100, canvas.height/2 - 150);
-  ctx.fillText(`${wordRight}`, 450, canvas.height/2 - 150);
+  ctx.fillText(`${score}`, 100, canvas.height/2 - 100);
+  ctx.fillText(`${wordRight}`, 450, canvas.height/2 - 100);
   homePageLink();
 }
 
@@ -649,19 +671,15 @@ window.setInterval(() => {
 }, 100);
 
 function pauseGameKeyHandler() {
-  console.log('insidepauseGamKeyHandler');
   if (paused === false) {
-    console.log('icalledpause');
     pause();
   } else if (paused === true) {
-    console.log('icalledresume');
     resume();
   }
 }
 
 function pause() {
   paused = true;
-  console.log('inside Pause');
   localStorage.setItem('word1',JSON.stringify(newWord));
   localStorage.setItem('word2',JSON.stringify(newWord2));
   localStorage.setItem('word3',JSON.stringify(newWord3));
@@ -685,11 +703,9 @@ function showGamePaused() {
 function resume() {
   cancelAnimationFrame(pausedAnimation);
   paused = false;
-  console.log('inside resume');
   var lsgWord1 = localStorage.getItem('word1');
   var lsgWord2 = localStorage.getItem('word2');
   var lsgWord3 = localStorage.getItem('word3');
-  console.log(lsgWord1, 'wooo');
   if (lsgWord1) {
     var thisWord = JSON.parse(lsgWord1);
     newWord = new Word(thisWord.x, thisWord.y, thisWord.radius, randomColor(), thisWord.dx, thisWord.word, thisWord.pathRadius, thisWord.letterIndex);
