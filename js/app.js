@@ -1,5 +1,5 @@
 'use strict';
-
+var paused = false;
 var ctx = document.getElementById('game').getContext('2d');
 var canvas = document.getElementById('game');
 canvas.width = window.innerWidth;
@@ -160,6 +160,7 @@ var words = [
   'instanceName.constructor.name',
   'Boolean.prototype.constructor'];
 
+
 var words10Fewer = words.filter(word => word.length < 10);
 var wordsBetween10And20 = words.filter(word => word.length < 20 && word.length > 10);
 var wordsAbove20 = words.filter(word => word.length > 20);
@@ -203,6 +204,7 @@ function wordInitialize() {
   cancelAnimationFrame(wordAnimation);
   spawnNewWord();
   animateWord();
+  console.log(animateWord, '???');
 }
 
 function word2Initialize() {
@@ -223,7 +225,7 @@ function spawnNewWord() {
   var radius = (ctx.measureText(word).width/2) + padding;
   console.log(radius);
   var dx = speedIncrease();
-  
+
   newWord = new Word(wordX, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
@@ -232,7 +234,7 @@ function spawnNewWord2() {
   var word = checkDuplicate();
   var radius = (ctx.measureText(word).width/2) + padding;
   var dx = speedIncrease();
-  
+
   newWord2 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
@@ -241,13 +243,16 @@ function spawnNewWord3() {
   var word = checkDuplicate();
   var radius = (ctx.measureText(word).width/2) + padding;
   var dx = speedIncrease();
-  
+
   newWord3 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
 function animateWord() {
+  if (paused) return;
   wordAnimation = requestAnimationFrame(animateWord);
   newWord.render();
+  // console.log(newWord);
+  // console.log(newWord.x, 'X', newWord.y, 'y');
   if (distance(newWord.x, newWord.y, x, y) < eventHorizonRadius) {
     newWord.pathRadius = newWord.pathRadius - 1;
     newWord.radius -= 20;
@@ -255,7 +260,7 @@ function animateWord() {
   if (distance(newWord.x, newWord.y, x, y) < 20) {
     lives--;
     drawBox();
-    wordInitialize();
+    if(paused === false) wordInitialize();
     newWord.letterIndex = 0;
     checkBlackHole();
     checkLives();
@@ -263,6 +268,7 @@ function animateWord() {
 }
 
 function animateWord2() {
+  if (paused) return;
   word2Animation = requestAnimationFrame(animateWord2);
   newWord2.render();
   if (distance(newWord2.x, newWord2.y, x, y) < eventHorizonRadius) {
@@ -279,6 +285,7 @@ function animateWord2() {
 }
 
 function animateWord3() {
+  if (paused) return;
   word3Animation = requestAnimationFrame(animateWord3);
   newWord3.render();
   if (distance(newWord3.x, newWord3.y, x, y) < eventHorizonRadius) {
@@ -294,11 +301,11 @@ function animateWord3() {
   }
 }
 
-function animateExplosion() { 
+function animateExplosion() {
   explosionAnimation = requestAnimationFrame(animateExplosion);
   explosionPieces.forEach( (pieces, index) => {
     pieces.render();
-    if (pieces.time === 0) { 
+    if (pieces.time === 0) {
       explosionPieces.splice(index, 1);
     }
   });
@@ -341,16 +348,16 @@ Word.prototype.render = function() {
   }
 };
 
-Word.prototype.explode = function() { 
+Word.prototype.explode = function() {
   // this.radius -= 10;
-  for(var i = 0; i < 150; i++) { 
+  for(var i = 0; i < 150; i++) {
     explosionPieces.push(new Explosion(this.x + this.radius, this.y, randomNumberBetween(1,2), randomColor()));
   }
   cancelAnimationFrame(explosionAnimation);
   animateExplosion();
 };
 
-function Explosion(x, y, radius, color) { 
+function Explosion(x, y, radius, color) {
   Word.call(this, x, y, radius, color);
   this.dx = randomNumberBetween(-2,2);
   this.dy = randomNumberBetween(-2,2);
@@ -382,9 +389,16 @@ function locationSpawning() {
 }
 
 window.addEventListener('keydown', keyPress);
+
 function keyPress(e) {
   var key = e.key;
+  console.log(key, 'key press');
+  if (key === 'Delete') {
+    pauseGameKeyHandler();
+    return;
+  }
   var currentLetter = newWord.word.charAt(newWord.letterIndex);
+
   if (key === currentLetter) {
     newWord.letterIndex++;
   }
@@ -394,17 +408,17 @@ function keyPress(e) {
     checkLevel();
     if (wordRight === 5) {
       newWord.explode();
-      wordInitialize();
+      if(paused === false) {wordInitialize();}
       word2Initialize();
       window.addEventListener('keydown', keyPress2);
     } else if (wordRight === 10 || wordRight === 11) {
       newWord.explode();
-      wordInitialize();
+      if(paused === false) { wordInitialize();}
       word3Initialize();
-      window.addEventListener('keydown', keyPress3);
+      // window.addEventListener('keydown', keyPress3);
     } else {
       newWord.explode();
-      wordInitialize();
+      if(paused === false) {wordInitialize();}
       wordReset();
     }
   }
@@ -443,24 +457,24 @@ function keyPress3(e) {
   }
 }
 
-function speedIncrease() { 
-  if (level === 0) { 
+function speedIncrease() {
+  if (level === 0) {
     return randomNumberBetween(1,1.5);
-  } else if (level === 1) { 
+  } else if (level === 1) {
     return randomNumberBetween(2,2.5);
-  } else if (level === 2) { 
+  } else if (level === 2) {
     return randomNumberBetween(3,3.5);
-  } else if (level === 3) { 
+  } else if (level === 3) {
     return randomNumberBetween(1,1.5);
-  } else if (level === 4) { 
+  } else if (level === 4) {
     return randomNumberBetween(2,2.5);
   } else if (level === 5) { 
     return randomNumberBetween(2.5,3);
   } else if (level === 6) { 
     return randomNumberBetween(1,1.5);
-  } else if (level >= 7) { 
+  } else if (level === 7) {
     return randomNumberBetween(1.5,2);
-  } else if (level === 8) { 
+  } else if (level === 8) {
     return randomNumberBetween(2,2.5);
   } else if (level === 9) {
     return randomNumberBetween(1.5,2);
@@ -496,7 +510,7 @@ function checkDuplicate() {
       }
     }
     return word;
-  } else if (level > 2 && level <= 5) { 
+  } else if (level > 2 && level <= 5) {
     while(duplicate) {
       randomIndex = randomIntBetween(0, wordsBetween10And20.length-1);
       word = wordsBetween10And20[randomIndex];
@@ -506,7 +520,7 @@ function checkDuplicate() {
       }
     }
     return word;
-  } else if (level > 5) { 
+  } else if (level > 5) {
     while(duplicate) {
       randomIndex = randomIntBetween(0, wordsAbove20.length-1);
       word = wordsAbove20[randomIndex];
@@ -515,6 +529,7 @@ function checkDuplicate() {
         duplicate = false;
       }
     }
+
     return word; 
   } else if (wordRight > 50) { 
     while(duplicate) {
@@ -608,6 +623,7 @@ blackHoleInitialize();
 showStartingText();
 window.setTimeout(function() {cancelAnimationFrame(showStartingTextAnimation);}, 5000);
 window.setTimeout(function() {wordInitialize();}, 5000);
+if(paused === false) wordInitialize();
 drawScore();
 
 window.setInterval(() => {
@@ -615,8 +631,10 @@ window.setInterval(() => {
 }, 10);
 
 window.setInterval(() => {
+    
   if(newWord.x > canvas.width && distance(newWord.x, newWord.y, x, y) > eventHorizonRadius) {
     wordInitialize();
+    if(paused === false) wordInitialize();
     score -= 2;
   } else if (newWord2.x > canvas.width && distance(newWord2.x, newWord2.y, x, y) > eventHorizonRadius) {
     word2Initialize();
@@ -627,3 +645,50 @@ window.setInterval(() => {
   }
 }, 100);
 
+function pauseGameKeyHandler() {
+  console.log('insidepauseGamKeyHandler');
+  if (paused === false) {
+    console.log('icalledpause');
+    pause();
+  } else if (paused === true) {
+    console.log('icalledresume');
+    resume();
+  }
+}
+
+function pause() {
+  paused = true;
+  console.log('inside Pause');
+  localStorage.setItem('word1',JSON.stringify(newWord));
+  localStorage.setItem('word2',JSON.stringify(newWord2));
+  localStorage.setItem('word3',JSON.stringify(newWord3));
+  localStorage.setItem('score',JSON.stringify(score));
+  localStorage.setItem('lives',JSON.stringify(lives));
+  newWord={};
+  newWord2={};
+  newWord3={};
+}
+
+function resume() {
+  paused = false;
+  console.log('inside resume');
+  var lsgWord1 = localStorage.getItem('word1');
+  var lsgWord2 = localStorage.getItem('word2');
+  var lsgWord3 = localStorage.getItem('word3');
+  console.log(lsgWord1, 'wooo');
+  if (lsgWord1) {
+    var thisWord = JSON.parse(lsgWord1);
+    newWord = new Word(thisWord.x, thisWord.y, thisWord.radius, randomColor(), thisWord.dx, thisWord.word, thisWord.pathRadius, thisWord.letterIndex);
+    animateWord();
+  }
+  else if(lsgWord2) {
+    var thisWord2 = JSON.parse(lsgWord2);
+    newWord = new Word(thisWord2.x, thisWord2.y, thisWord2.radius, randomColor(), thisWord2.dx, thisWord2.word, thisWord2.pathRadius, thisWord2.letterIndex);
+    animateWord2();
+  }
+  else if(lsgWord3) {
+    var thisWord3 = JSON.parse(lsgWord3);
+    newWord = new Word(thisWord3.x, thisWord3.y, thisWord3.radius, randomColor(), thisWord3.dx, thisWord3.word, thisWord3.pathRadius, thisWord3.letterIndex);
+    animateWord3();
+  }
+}
