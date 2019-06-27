@@ -4,7 +4,7 @@ var ctx = document.getElementById('game').getContext('2d');
 var canvas = document.getElementById('game');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-ctx.font = '15px Helvetica';
+ctx.font = '15px "Press Start 2P"';
 var words = [
   '<!DOCTYPE>',
   '<a>',
@@ -574,16 +574,20 @@ function endPage() {
   removeWords();
 
   requestAnimationFrame(endPage);
-  ctx.font = '30px sans-serif';
+  ctx.font = '30px "Press Start 2P"';
   ctx.fillStyle = 'white';
-  ctx.fillText('Final Score', 150, canvas.height/2 - 300);
-  ctx.fillText('Total Words Correct', 450, canvas.height/2 - 300);
+
+  ctx.fillText('Final Score', 150, canvas.height/2 - 200);
+  ctx.fillText('Total Words Correct', 490, canvas.height/2 - 200);
   ctx.fillStyle = 'aqua';
-  ctx.fillText(`${score}`, 150, canvas.height/2 - 250);
-  ctx.fillText(`${wordRight}`, 450, canvas.height/2 - 250);
+  ctx.fillText(`${score}`, 150, canvas.height/2 - 150);
+  ctx.fillText(`${wordRight}`, 490, canvas.height/2 - 150);
+
 
   homePageLink();
+
 }
+
 
 function removeWords() { 
   cancelAnimationFrame(wordAnimation);
@@ -594,12 +598,6 @@ function removeWords() {
   removeEventListener('keydown', keyPress3);
 }
 
-function bossRound() { 
-  if (wordRight > 50) { 
-    removeWords();
-
-  }
-}
 
 // function showRounds() { 
 //   showRoundAnimation = requestAnimationFrame(showRounds);
@@ -613,12 +611,12 @@ function bossRound() {
 
 function showStartingText() { 
   showStartingTextAnimation = requestAnimationFrame(showStartingText);
-  ctx.font = 'bold 40px sans-serif';
+  ctx.font = 'bold 40px "Press Start 2P"';
   ctx.fillStyle = 'white';
   var words = 'STOP BLACK HOLE FROM GROWING';
   var wordsLength = ctx.measureText(words).width/2;
   ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
-  ctx.font = '15px Helvetica';
+  ctx.font = '15px "Press Start 2P"';
 }
 
 locationSpawning();
