@@ -1,4 +1,4 @@
-var playText = 'Play Agian';
+var playText = 'Play Again';
 var homeText = 'Home';
 var isLink1 = false;
 var isLink2 = false;
