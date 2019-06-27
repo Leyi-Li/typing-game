@@ -9,7 +9,7 @@ function biggerBlackHoleInitialize() {
   cancelAnimationFrame(blackHoleAnimation);
   eventHorizonRadius = 250;
   particles = [];
-  for (var i = 0; i < 450; i++) { 
+  for (var i = 0; i < 650; i++) { 
     particles.push(new BiggerParticle(canvas.width/2, canvas.height/2, randomIntBetween(1,3), randomColor()));
   }
   animateBlackHole();
@@ -19,7 +19,7 @@ function biggestBlackHoleInitialize() {
   cancelAnimationFrame(blackHoleAnimation);
   eventHorizonRadius = 300;
   particles = [];
-  for (var i = 0; i < 650; i++) { 
+  for (var i = 0; i < 1050; i++) { 
     particles.push(new BiggestParticle(canvas.width/2, canvas.height/2, randomIntBetween(1,3), randomColor()));
   }
   animateBlackHole();
@@ -103,9 +103,6 @@ BiggestParticle.prototype.draw = function() {
 
 function animateBlackHole() { 
   blackHoleAnimation = requestAnimationFrame(animateBlackHole);
-  // ctx.fillStyle = 'rgba(0,0,0,0.05)';
-  // ctx.fillRect(0, 0, canvas.width, canvas.height);
-
   particles.forEach(particle => { 
     particle.render();
   });

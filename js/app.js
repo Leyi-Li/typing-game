@@ -4,7 +4,7 @@ var ctx = document.getElementById('game').getContext('2d');
 var canvas = document.getElementById('game');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-ctx.font = '15px Helvetica';
+ctx.font = '15px sans-serif';
 var words = [
   '<!DOCTYPE>',
   '<a>',
@@ -160,10 +160,10 @@ var words = [
   'instanceName.constructor.name',
   'Boolean.prototype.constructor'];
 
-  var words10Fewer = words.filter(word => word.length < 10);
-  var wordsBetween10And20 = words.filter(word => word.length < 20 && word.length > 10);
-  var wordsAbove20 = words.filter(word => word.length > 20);
-  var wordsBossRound = ['for(i=0;i<name.length;i++)'];
+var words10Fewer = words.filter(word => word.length < 10);
+var wordsBetween10And20 = words.filter(word => word.length < 20 && word.length > 10);
+var wordsAbove20 = words.filter(word => word.length > 20);
+var wordsBossRound = words.filter(word => word.length > 30);
 
 var x = window.innerWidth - 200;
 var y = window.innerHeight/2;
@@ -173,6 +173,7 @@ var pathRadius = 200;
 var radians = (3 * Math.PI)/4;
 var randomIndex;
 var letterIndex = 0;
+var index = 0;
 var wordX = 0;
 var wordLength = 0;
 var wordHeight = 5;
@@ -180,7 +181,6 @@ var padding = 5;
 var particles = [];
 var stars = [];
 var spawnLocation = [];
-var wordsList = [];
 var pastWords = [];
 var explosionPieces = [];
 var newWord;
@@ -245,11 +245,6 @@ function spawnNewWord3() {
   newWord3 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
-function spawnBossWord() { 
-  var word = checkDuplicate();
-  
-}
-
 function animateWord() {
   wordAnimation = requestAnimationFrame(animateWord);
   newWord.render();
@@ -308,7 +303,6 @@ function animateExplosion() {
     }
   });
 }
-
 
 function Word(x, y, radius, color, dx, word, pathRadius, letterIndex) {
   this.x = x;
@@ -444,8 +438,8 @@ function keyPress3(e) {
     newWord3.explode();
     checkLevel();
     word3Initialize();
-    word3Initialize();
     wordReset();
+    bossRound();
   }
 }
 
@@ -461,13 +455,15 @@ function speedIncrease() {
   } else if (level === 4) { 
     return randomNumberBetween(2,2.5);
   } else if (level === 5) { 
-    return randomNumberBetween(3,3.5);
+    return randomNumberBetween(2.5,3);
   } else if (level === 6) { 
     return randomNumberBetween(1,1.5);
   } else if (level >= 7) { 
     return randomNumberBetween(1.5,2);
   } else if (level === 8) { 
     return randomNumberBetween(2,2.5);
+  } else if (level === 9) {
+    return randomNumberBetween(1.5,2);
   }
 }
 
@@ -522,8 +518,8 @@ function checkDuplicate() {
     return word; 
   } else if (wordRight > 50) { 
     while(duplicate) {
-      randomIndex = randomIntBetween(0, wordsAbove20.length-1);
-      word = wordsAbove20[randomIndex];
+      randomIndex = randomIntBetween(0, wordsBossRound.length-1);
+      word = wordsBossRound[randomIndex];
       if (pastWords.includes(word) === false) {
         pastWords.push(word);
         duplicate = false;
@@ -560,6 +556,8 @@ function checkLevel() {
     level = 7;
   } if (wordRight === 40) { 
     level = 8;
+  } if (wordRight === 50) { 
+    level = 9;
   }
 }
 
@@ -576,13 +574,11 @@ function endPage() {
   requestAnimationFrame(endPage);
   ctx.font = '30px sans-serif';
   ctx.fillStyle = 'white';
-  ctx.fillText('Final Score', 150, canvas.height/2 - 300);
-  ctx.fillText('Total Words Correct', 450, canvas.height/2 - 300);
+  ctx.fillText('Final Score', 150, canvas.height/2 - 150);
+  ctx.fillText('Total Words Correct', 450, canvas.height/2 - 150);
   ctx.fillStyle = 'aqua';
-  ctx.fillText(`${score}`, 150, canvas.height/2 - 250);
-  ctx.fillText(`${wordRight}`, 450, canvas.height/2 - 250);
-
-  homePageLink();
+  ctx.fillText(`${score}`, 150, canvas.height/2 -100);
+  ctx.fillText(`${wordRight}`, 450, canvas.height/2 -100);
 }
 
 function removeWords() { 
@@ -594,23 +590,6 @@ function removeWords() {
   removeEventListener('keydown', keyPress3);
 }
 
-function bossRound() { 
-  if (wordRight > 50) { 
-    removeWords();
-
-  }
-}
-
-// function showRounds() { 
-//   showRoundAnimation = requestAnimationFrame(showRounds);
-//   ctx.font = 'bold 40px sans-serif';
-//   ctx.fillStyle = 'white';
-//   var words = `ROUND ${numRound} COMPLETE`;
-//   var wordsLength = ctx.measureText(words).width/2;
-//   ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
-//   ctx.font = '15px Helvetica';
-// }
-
 function showStartingText() { 
   showStartingTextAnimation = requestAnimationFrame(showStartingText);
   ctx.font = 'bold 40px sans-serif';
@@ -618,7 +597,7 @@ function showStartingText() {
   var words = 'STOP BLACK HOLE FROM GROWING';
   var wordsLength = ctx.measureText(words).width/2;
   ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
-  ctx.font = '15px Helvetica';
+  ctx.font = '15px sans-serif';
 }
 
 locationSpawning();

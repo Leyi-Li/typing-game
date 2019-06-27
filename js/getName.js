@@ -2,7 +2,8 @@
 
 var userName = prompt('What is your name?');
 var playerList = [];
-var welcomeWords = document.getElementById('welcomeWords');
+var index = 0;
+// var welcomeWords = document.getElementById('welcomeWords');
 checkLocalStorage();
 checknameList();
 addToLocalStorage('playerList', playerList); 
@@ -15,8 +16,6 @@ addToLocalStorage('playerList', playerList);
 function checkLocalStorage(){
   if(localStorage.playerList){
     playerList = getDataFromLocalStorage('playerList');
-// }else{
-//   playerList.push(userName);
  }
 }
 
@@ -24,9 +23,11 @@ function checkLocalStorage(){
 function checknameList(){
   userName = userName.toUpperCase();
   var nameExist = false;
+  var welcomeWords = '';
   for (var i = 0; i < playerList.length; i++) {
     if (playerList[i].name === userName){
-      welcomeWords.textContent = userName + ', WELCOME BACK TO THE GAME!';
+      type(nameExist);
+      // welcomeWords.textContent = userName + ', WELCOME BACK TO THE GAME!';
       nameExist = true;
       playerList[i].playing = true;
     } else { 
@@ -34,9 +35,10 @@ function checknameList(){
     }
   }
   if (userName === null){
-    welcomeWords.textContent = 'WELCOME TO THE GAME!';
+    // welcomeWords.textContent = 'WELCOME TO THE GAME!';
   } else if (nameExist === false){
-    welcomeWords.textContent = `${userName}, WELCOME TO THE GAME!`;
+    type(nameExist);
+    // welcomeWords.textContent = `${userName}, WELCOME TO THE GAME!`;
     playerList.push(new Player(userName));
   }
 }
@@ -45,4 +47,26 @@ function Player(name) {
   this.name = name;
   this.score = 0;
   this.playing = true;
+}
+
+function type(nameExist) { 
+  var letter = '';
+  var welcomeBackWords = `${userName}, WELCOME BACK TO THE GAME!`;
+  var welcomeWords = `${userName}, WELCOME TO THE GAME!`;
+
+  if(nameExist === false) {
+    letter = welcomeWords.slice(0, index++);
+    document.getElementById('welcomeWords').textContent = letter;
+    if (letter.length === welcomeWords.length) { 
+      index = letter.length;
+    }
+    setTimeout(type,200);
+  } else { 
+    letter = welcomeBackWords.slice(0, index++);
+    document.getElementById('welcomeWords').textContent = letter;
+    if (letter.length === welcomeBackWords.length) { 
+      index = letter.length;
+    }
+    setTimeout(type,200);
+  }
 }

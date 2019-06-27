@@ -12,7 +12,6 @@ body{
     line-height: 70px;
 }
 
-
 .playButtons{
     position:float;
     width: 50vh;
@@ -30,27 +29,23 @@ button{
     padding:4px;
 }
 
-
 .welcome{
     font-size:2em;
     margin-top:5vh;
     margin-bottom: 30px;
 }
 
-
-
-
 a {
-position: relative;
-text-decoration: none;
-width: 270px;
-height: 90px;
-line-height: 70px;
-text-align: center;
-font-size: 20px;
-text-transform: uppercase;
-letter-spacing: 4px;
-background-color:none;
+    position: relative;
+    text-decoration: none;
+    width: 270px;
+    height: 90px;
+    line-height: 70px;
+    text-align: center;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    background-color:none;
 }
 
 a:hover{
@@ -66,7 +61,7 @@ text-decoration: underline;
 footer{
     position: absolute;
     z-index: 4;
-    height:10%;
+    height:15%;
     width:100%;
     bottom: 0;
     text-align: center;
@@ -74,3 +69,24 @@ footer{
     padding: 20px;
 }
 
+#welcomeWords { 
+    position: relative;
+}
+
+#welcomeWords::after {
+    content: ""; 
+    position: absolute;
+    width: 1px;
+    height: 90%;
+    border-right: 2px solid white;
+    animation: blink 0.5s infinite ease;
+}
+
+@keyframes blink { 
+    0% { 
+        opacity: 0;
+    }
+    100% { 
+        opacity: 1;
+    }
+}
