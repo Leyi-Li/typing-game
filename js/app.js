@@ -223,7 +223,6 @@ function spawnNewWord() {
   var y = spawnLocation[randomIntBetween(0,spawnLocation.length-1)];
   var word = checkDuplicate();
   var radius = (ctx.measureText(word).width/2) + padding;
-  console.log(radius);
   var dx = speedIncrease();
 
   newWord = new Word(wordX, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
@@ -248,19 +247,21 @@ function spawnNewWord3() {
 }
 
 function animateWord() {
-  if (paused) return;
+  if (paused) {
+    return;
+  }
   wordAnimation = requestAnimationFrame(animateWord);
   newWord.render();
-  // console.log(newWord);
-  // console.log(newWord.x, 'X', newWord.y, 'y');
   if (distance(newWord.x, newWord.y, x, y) < eventHorizonRadius) {
     newWord.pathRadius = newWord.pathRadius - 1;
-    newWord.radius -= 20;
   }
   if (distance(newWord.x, newWord.y, x, y) < 20) {
     lives--;
     drawBox();
-    if(paused === false) wordInitialize();
+    // wordInitialize();
+    if(paused === false){
+      wordInitialize();
+    }
     newWord.letterIndex = 0;
     checkBlackHole();
     checkLives();
@@ -268,7 +269,9 @@ function animateWord() {
 }
 
 function animateWord2() {
-  if (paused) return;
+  if (paused) {
+    return;
+  }
   word2Animation = requestAnimationFrame(animateWord2);
   newWord2.render();
   if (distance(newWord2.x, newWord2.y, x, y) < eventHorizonRadius) {
@@ -277,7 +280,10 @@ function animateWord2() {
   if (distance(newWord2.x, newWord2.y, x, y) < 20) {
     lives--;
     drawBox();
-    word2Initialize();
+    // word2Initialize();
+    if(paused === false){
+      word2Initialize();
+    }
     newWord2.letterIndex = 0;
     checkBlackHole();
     checkLives();
@@ -285,7 +291,9 @@ function animateWord2() {
 }
 
 function animateWord3() {
-  if (paused) return;
+  if (paused) {
+    return;
+  }
   word3Animation = requestAnimationFrame(animateWord3);
   newWord3.render();
   if (distance(newWord3.x, newWord3.y, x, y) < eventHorizonRadius) {
@@ -294,7 +302,10 @@ function animateWord3() {
   if (distance(newWord3.x, newWord3.y, x, y) < 20) {
     lives--;
     drawBox();
-    word3Initialize();
+    // word3Initialize();
+    if(paused === false){
+      word3Initialize();
+    }
     newWord3.letterIndex = 0;
     checkBlackHole();
     checkLives();
@@ -349,7 +360,6 @@ Word.prototype.render = function() {
 };
 
 Word.prototype.explode = function() {
-  // this.radius -= 10;
   for(var i = 0; i < 150; i++) {
     explosionPieces.push(new Explosion(this.x + this.radius, this.y, randomNumberBetween(1,2), randomColor()));
   }
@@ -393,7 +403,7 @@ window.addEventListener('keydown', keyPress);
 function keyPress(e) {
   var key = e.key;
   console.log(key, 'key press');
-  if (key === 'Delete') {
+  if (key === 'Escape') {
     pauseGameKeyHandler();
     return;
   }
@@ -409,16 +419,21 @@ function keyPress(e) {
     if (wordRight === 5) {
       newWord.explode();
       if(paused === false) {wordInitialize();}
-      word2Initialize();
+      if(paused === false) {word2Initialize();}
+      // wordInitialize();
+      // word2Initialize();
       window.addEventListener('keydown', keyPress2);
     } else if (wordRight === 10 || wordRight === 11) {
       newWord.explode();
-      if(paused === false) { wordInitialize();}
-      word3Initialize();
-      // window.addEventListener('keydown', keyPress3);
+      if(paused === false) {wordInitialize();}
+      if(paused === false) {word3Initialize();}
+      // wordInitialize();
+      // word3Initialize();
+      window.addEventListener('keydown', keyPress3);
     } else {
       newWord.explode();
       if(paused === false) {wordInitialize();}
+      // wordInitialize();
       wordReset();
     }
   }
@@ -453,7 +468,6 @@ function keyPress3(e) {
     checkLevel();
     word3Initialize();
     wordReset();
-    bossRound();
   }
 }
 
@@ -529,7 +543,6 @@ function checkDuplicate() {
         duplicate = false;
       }
     }
-
     return word; 
   } else if (wordRight > 50) { 
     while(duplicate) {
@@ -587,13 +600,13 @@ function endPage() {
   removeWords();
 
   requestAnimationFrame(endPage);
-  ctx.font = '30px "Press Start 2P"';
+  ctx.font = '20px "Press Start 2P"';
   ctx.fillStyle = 'white';
-  ctx.fillText('Final Score', 150, canvas.height/2 - 200);
-  ctx.fillText('Total Words Correct', 490, canvas.height/2 - 200);
+  ctx.fillText('Final Score', 100, canvas.height/2 - 200);
+  ctx.fillText('Total Words Correct', 450, canvas.height/2 - 200);
   ctx.fillStyle = 'aqua';
-  ctx.fillText(`${score}`, 150, canvas.height/2 - 150);
-  ctx.fillText(`${wordRight}`, 490, canvas.height/2 - 150);
+  ctx.fillText(`${score}`, 100, canvas.height/2 - 150);
+  ctx.fillText(`${wordRight}`, 450, canvas.height/2 - 150);
   homePageLink();
 }
 
@@ -609,7 +622,7 @@ function removeWords() {
 
 function showStartingText() { 
   showStartingTextAnimation = requestAnimationFrame(showStartingText);
-  ctx.font = 'bold 40px "Press Start 2P"';
+  ctx.font = 'bold 30px "Press Start 2P"';
   ctx.fillStyle = 'white';
   var words = 'STOP BLACK HOLE FROM GROWING';
   var wordsLength = ctx.measureText(words).width/2;
@@ -623,7 +636,6 @@ blackHoleInitialize();
 showStartingText();
 window.setTimeout(function() {cancelAnimationFrame(showStartingTextAnimation);}, 5000);
 window.setTimeout(function() {wordInitialize();}, 5000);
-if(paused === false) wordInitialize();
 drawScore();
 
 window.setInterval(() => {
@@ -633,14 +645,16 @@ window.setInterval(() => {
 window.setInterval(() => {
     
   if(newWord.x > canvas.width && distance(newWord.x, newWord.y, x, y) > eventHorizonRadius) {
-    wordInitialize();
-    if(paused === false) wordInitialize();
+    // wordInitialize();
+    if(paused === false) {wordInitialize();}
     score -= 2;
   } else if (newWord2.x > canvas.width && distance(newWord2.x, newWord2.y, x, y) > eventHorizonRadius) {
-    word2Initialize();
+    // word2Initialize();
+    if(paused === false) {word2Initialize();}
     score -= 2;
   } else if (newWord3.x > canvas.width && distance(newWord3.x, newWord3.y, x, y) > eventHorizonRadius) {
-    word3Initialize();
+    // word3Initialize();
+    if(paused === false) {word3Initialize();}
     score -= 2;
   }
 }, 100);
@@ -681,14 +695,14 @@ function resume() {
     newWord = new Word(thisWord.x, thisWord.y, thisWord.radius, randomColor(), thisWord.dx, thisWord.word, thisWord.pathRadius, thisWord.letterIndex);
     animateWord();
   }
-  else if(lsgWord2) {
+  if(lsgWord2) {
     var thisWord2 = JSON.parse(lsgWord2);
-    newWord = new Word(thisWord2.x, thisWord2.y, thisWord2.radius, randomColor(), thisWord2.dx, thisWord2.word, thisWord2.pathRadius, thisWord2.letterIndex);
+    newWord2 = new Word(thisWord2.x, thisWord2.y, thisWord2.radius, randomColor(), thisWord2.dx, thisWord2.word, thisWord2.pathRadius, thisWord2.letterIndex);
     animateWord2();
   }
-  else if(lsgWord3) {
+  if(lsgWord3) {
     var thisWord3 = JSON.parse(lsgWord3);
-    newWord = new Word(thisWord3.x, thisWord3.y, thisWord3.radius, randomColor(), thisWord3.dx, thisWord3.word, thisWord3.pathRadius, thisWord3.letterIndex);
+    newWord3 = new Word(thisWord3.x, thisWord3.y, thisWord3.radius, randomColor(), thisWord3.dx, thisWord3.word, thisWord3.pathRadius, thisWord3.letterIndex);
     animateWord3();
   }
 }
