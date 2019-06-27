@@ -3,7 +3,7 @@ var paused = false;
 var ctx = document.getElementById('game').getContext('2d');
 var canvas = document.getElementById('game');
 canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.height = window.innerHeight - 58;
 ctx.font = '15px "Press Start 2P"';
 var words = [
   '<!DOCTYPE>',
