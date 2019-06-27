@@ -54,7 +54,7 @@ text-decoration: underline;
 
 .instruction{
     border:2px dashed whitesmoke;
-    width: 500px;
+    width: 800px;
     margin:auto;
 }   
 
@@ -63,7 +63,7 @@ footer{
     z-index: 4;
     height:15%;
     top:0;
-    right: 0;
+    right:0;
     
 }
 
@@ -90,6 +90,28 @@ footer{
 }
 
 .instruction {
-    overflow: scroll;
+    /* overflow: scroll; */
     height: 300px;
+    overflow-x: hidden;
+    line-height: 30px;
+    text-align: left;
+}
+
+ol {
+    list-style-type: decimal;
+    list-style-position: inside;
+}
+
+#how {
+    text-align: center;
+    text-decoration: underline;
+}
+
+li {
+    padding-left:15px;
+}
+
+.endWord{
+    text-align: center;
+    margin-top: 10px;
 }
