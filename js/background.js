@@ -1,6 +1,6 @@
 'use strict';
 
-function starInitialize() { 
+function starInitialize() {
   for (var i = 0; i < 200; i++) {
     stars.push(new Star(randomIntBetween(0, canvas.width), randomIntBetween(0, canvas.height), randomIntBetween(1,2), randomColor(), randomNumberBetween(0.3,0.5)));
   }
@@ -21,20 +21,20 @@ Star.prototype.draw = function() {
   ctx.fillStyle = this.color;
   ctx.fill();
   ctx.closePath();
-}
+};
 
 Star.prototype.render = function() {
   this.x += this.dx;
-  if (this.x > canvas.width) { 
+  if (this.x > canvas.width) {
     this.x = 0;
   }
   this.draw();
-}
+};
 
-function animateStar() { 
+function animateStar() {
   requestAnimationFrame(animateStar);
 
-  stars.forEach(star => { 
+  stars.forEach(star => {
     star.render();
   });
 }
