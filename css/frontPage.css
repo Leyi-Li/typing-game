@@ -62,11 +62,9 @@ footer{
     position: absolute;
     z-index: 4;
     height:15%;
-    width:100%;
-    bottom: 0;
-    text-align: center;
-    border-top:1px dashed white;
-    padding: 20px;
+    top:0;
+    right: 0;
+    
 }
 
 #welcomeWords { 
@@ -89,4 +87,9 @@ footer{
     100% { 
         opacity: 1;
     }
+}
+
+.instruction {
+    overflow: scroll;
+    height: 300px;
 }
