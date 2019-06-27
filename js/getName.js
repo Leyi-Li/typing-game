@@ -3,7 +3,6 @@
 var userName = prompt('What is your name?');
 var playerList = [];
 var index = 0;
-// var welcomeWords = document.getElementById('welcomeWords');
 checkLocalStorage();
 checknameList();
 addToLocalStorage('playerList', playerList); 
@@ -27,7 +26,6 @@ function checknameList(){
   for (var i = 0; i < playerList.length; i++) {
     if (playerList[i].name === userName){
       type(nameExist);
-      // welcomeWords.textContent = userName + ', WELCOME BACK TO THE GAME!';
       nameExist = true;
       playerList[i].playing = true;
     } else { 
@@ -35,10 +33,8 @@ function checknameList(){
     }
   }
   if (userName === null){
-    // welcomeWords.textContent = 'WELCOME TO THE GAME!';
   } else if (nameExist === false){
     type(nameExist);
-    // welcomeWords.textContent = `${userName}, WELCOME TO THE GAME!`;
     playerList.push(new Player(userName));
   }
 }
