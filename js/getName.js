@@ -3,6 +3,7 @@
 var userName = prompt('What is your name?');
 var playerList = [];
 var index = 0;
+var nameExist = false;
 checkLocalStorage();
 checknameList();
 addToLocalStorage('playerList', playerList); 
@@ -21,20 +22,16 @@ function checkLocalStorage(){
 //see if the name is in the playerList
 function checknameList(){
   userName = userName.toUpperCase();
-  var nameExist = false;
-  var welcomeWords = '';
   for (var i = 0; i < playerList.length; i++) {
     if (playerList[i].name === userName){
-      type(nameExist);
       nameExist = true;
+      type();
       playerList[i].playing = true;
     } else { 
       playerList[i].playing = false;
     }
-  }
-  if (userName === null){
-  } else if (nameExist === false){
-    type(nameExist);
+  } if (nameExist === false){
+    type();
     playerList.push(new Player(userName));
   }
 }
@@ -45,7 +42,7 @@ function Player(name) {
   this.playing = true;
 }
 
-function type(nameExist) { 
+function type() { 
   var letter = '';
   var welcomeBackWords = `${userName}, WELCOME BACK TO THE GAME!`;
   var welcomeWords = `${userName}, WELCOME TO THE GAME!`;
@@ -57,7 +54,7 @@ function type(nameExist) {
       index = letter.length;
     }
     setTimeout(type,200);
-  } else { 
+  } else if (nameExist){ 
     letter = welcomeBackWords.slice(0, index++);
     document.getElementById('welcomeWords').textContent = letter;
     if (letter.length === welcomeBackWords.length) { 

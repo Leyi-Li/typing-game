@@ -197,7 +197,7 @@ var shrinkingAnimation;
 var showRoundAnimation;
 var showStartingTextAnimation;
 var pausedAnimation;
-var lives = 1;
+var lives = 3;
 var level = 0;
 var numRound = 0;
 var wordRight = 0;
