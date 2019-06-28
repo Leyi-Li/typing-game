@@ -2,7 +2,7 @@
 
 Balckhole Speed Typing
 
-Our project is a speed typing game. When a word comes on screen it is sucked towards the blackhole. You have until the time that the word touches the blackhole to type it correctly and press enter. In game mode 1 you you have 60 seconds and 1 life. The goal is to enter as many words correctly as you can in the time limit. Game mode 2 you have 2 lives but no time limit. Try and go for as long as you can.
+Our project is a speed typing game. There is a black hole that you are preventing the words to be sucked in. Type the words to earn points. The amount of points earned are depended on the length of the words. Each time a word get sucked into the black hole, you lose a live. You have 3 lives total. Any words that goes outside of the screen but not into the black hole are counted as -2 points to your total score. Get as many points as you can while practicing typing coding-related words. 
 
 Authors: Quang Nguyen, Leyla Li, Corey Chang, Sam Gnuschke
 
@@ -24,7 +24,7 @@ To show what we have learned in our 201 codefellows course.
 Logo/demo screenshots
 
 ## Features
-Our project is a speed typing game. When a word comes on screen it is sucked towards the blackhole. You have until the time that the word touches the blackhole to type it correctly and press enter. In game mode 1 you you have 60 seconds and 1 life. The goal is to enter as many words correctly as you can in the time limit. Game mode 2 you have 2 lives but no time limit. Try and go for as long as you can.
+Our project is a speed typing game. There is a black hole that you are preventing the words to be sucked in. Type the words to earn points. The amount of points earned are depended on the length of the words. Each time a word get sucked into the black hole, you lose a live. You have 3 lives total. Any words that goes outside of the screen but not into the black hole are counted as -2 points to your total score. Get as many points as you can while practicing typing coding-related words. 
 
 ## Code Example
 TBD
