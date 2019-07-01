@@ -1,4 +1,5 @@
 'use strict';
+
 var paused = false;
 var ctx = document.getElementById('game').getContext('2d');
 var canvas = document.getElementById('game');
@@ -160,14 +161,16 @@ var words = [
   'instanceName.constructor.name',
   'Boolean.prototype.constructor'];
 
-
+// Filter our whole word list to smaller chunks for different levels.
 var words10Fewer = words.filter(word => word.length < 10);
 var wordsBetween10And20 = words.filter(word => word.length < 20 && word.length > 10);
 var wordsAbove20 = words.filter(word => word.length > 20 && word.length < 30);
 var wordsBossRound = words.filter(word => word.length >= 30);
 
+// position for the black hole
 var x = window.innerWidth - 200;
 var y = window.innerHeight/2;
+
 var score = 0;
 var eventHorizonRadius = 200;
 var pathRadius = 200;
@@ -179,12 +182,14 @@ var wordX = 0;
 var wordLength = 0;
 var wordHeight = 5;
 var padding = 5;
+
 var particles = [];
 var stars = [];
 var spawnLocation = [];
 var pastWords = [];
 var explosionPieces = [];
 var pastLocation = [];
+
 var newWord;
 var newWord2;
 var newWord3;
@@ -197,11 +202,13 @@ var shrinkingAnimation;
 var showRoundAnimation;
 var showStartingTextAnimation;
 var pausedAnimation;
+
 var lives = 3;
 var level = 0;
 var numRound = 0;
 var wordRight = 0;
 
+// Make a new word appear on the screen. Because there can be max 3 words on the screen, there are three functions for initializing the words. 
 function wordInitialize() {
   cancelAnimationFrame(wordAnimation);
   spawnNewWord();
@@ -220,6 +227,7 @@ function word3Initialize() {
   animateWord3();
 }
 
+// Make a new instance of Word constructor by calling other functions to calculate some of the parameters. 
 function spawnNewWord() {
   var y = chooseLocation();
   var word = checkDuplicate();
@@ -247,6 +255,7 @@ function spawnNewWord3() {
   newWord3 = new Word(wordX -50, y, radius, randomColor(), dx, word, pathRadius, letterIndex);
 }
 
+// animate the word to make the word seem like it is moving. Basically calling the function 60 times per second to draw the word on the screen. Also check if the word is near the black hole. If it is, decrement the pathRadius. 
 function animateWord() {
   if (paused) {
     return;
@@ -310,6 +319,7 @@ function animateWord3() {
   }
 }
 
+// Make the firework explosion after user finish typing a word.
 function animateExplosion() {
   explosionAnimation = requestAnimationFrame(animateExplosion);
   explosionPieces.forEach( (pieces, index) => {
@@ -320,6 +330,15 @@ function animateExplosion() {
   });
 }
 
+// This is the following parameters for the Word constructor in order: 
+// starting x position
+// starting y position
+// radius of the circle encasing the word
+// color of the circle
+// how fast the words will be travelling. Displacement of word in x direction after every frame.
+// what the word is as a string
+// The starting distance away from the black hole center that the word start to get sucked in. This pathradius will decrement over time which makes the word seems like it is swirling in the black hole.
+// The starting index of the word that will be used to track which letter the user is typing. 
 function Word(x, y, radius, color, dx, word, pathRadius, letterIndex) {
   this.x = x;
   this.y = y;
@@ -331,6 +350,7 @@ function Word(x, y, radius, color, dx, word, pathRadius, letterIndex) {
   this.letterIndex = letterIndex;
 }
 
+// draw the word and the circle that encapsulate it on canvas.
 Word.prototype.draw = function() {
   ctx.fillStyle = 'white';
   ctx.fillText(this.word, this.x, this.y);
@@ -342,6 +362,7 @@ Word.prototype.draw = function() {
   ctx.stroke();
 };
 
+// check if the word is near the black hole. If it is, calculate the x and y position of the word to make it looks like it is swirling into the black hole. If the word is not near the black hole, increase the x position by dx. Also have the word be changed to red color to match the letter that the user typed on the word. 
 Word.prototype.render = function() {
   if (distance(this.x, this.y, x, y) < eventHorizonRadius) {
     radians += 0.05;
@@ -357,6 +378,7 @@ Word.prototype.render = function() {
   }
 };
 
+// Create each individual pieces of the fireword explosion and put it in an array. Then call animateExplosion to render to pieces on screen. 
 Word.prototype.explode = function() {
   for(var i = 0; i < 150; i++) {
     explosionPieces.push(new Explosion(this.x + this.radius, this.y, randomNumberBetween(1,2), randomColor()));
@@ -365,6 +387,7 @@ Word.prototype.explode = function() {
   animateExplosion();
 };
 
+// Constructor for each explosion piece. Time is for the amount of time the explosion last on the screen in ms. Opacity is for the gradually fading of the explosion pieces. 
 function Explosion(x, y, radius, color) {
   Word.call(this, x, y, radius, color);
   this.dx = randomNumberBetween(-2,2);
@@ -389,6 +412,7 @@ Explosion.prototype.render = function() {
   this.opacity -= 1 /this.time;
 };
 
+// Make an array that has the y coordinates of where the words can spawn.
 function locationSpawning() {
   var locationAmount = Math.floor(canvas.height/10);
   for(var i = 2; i <= 9; i++) {
@@ -396,6 +420,7 @@ function locationSpawning() {
   }
 }
 
+// Check and return a location that has not been picked before to avoid overlapping words that spawn in the same location. 
 function chooseLocation() { 
   var duplicate = true;
   var location;
@@ -413,6 +438,7 @@ function chooseLocation() {
   return spawnLocation[randomIndex];
 }
 
+// Listen to which key was pressed and increase the letter index for the render method of Word to know which letters to color red. Also checks if the word have been fully typed out to increase score and total words typed right. 
 window.addEventListener('keydown', keyPress);
 
 function keyPress(e) {
@@ -449,6 +475,7 @@ function keyPress(e) {
   }
 }
 
+// Same sort of functionality as keyPress but for the second word. 
 function keyPress2(e) {
   var key = e.key;
   var currentLetter = newWord2.word.charAt(newWord2.letterIndex);
@@ -481,6 +508,7 @@ function keyPress3(e) {
   }
 }
 
+// Checks the levels of the game currently and adjust the speed of word accordingly to increase difficulty. 
 function speedIncrease() {
   if (level === 0) {
     return randomNumberBetween(1,1.5);
@@ -507,6 +535,7 @@ function speedIncrease() {
   }
 }
 
+// reset the letter index adter a word is fully typed out so that any progress on another word is reset. 
 function wordReset() {
   newWord.letterIndex = 0;
   newWord2.letterIndex = 0;
@@ -514,6 +543,7 @@ function wordReset() {
   pathRadius = eventHorizonRadius;
 }
 
+// Check the amount of lives to determine what size of the black hole it should be. 
 function checkBlackHole() {
   if (lives === 2) {
     biggerBlackHoleInitialize();
@@ -522,6 +552,7 @@ function checkBlackHole() {
   }
 }
 
+// Checks for duplicate words so that each word that appears on the screen only show up once and depend on the level, return the word of a range of word length.
 function checkDuplicate() {
   var randomIndex;
   var word;
@@ -569,6 +600,7 @@ function checkDuplicate() {
   }
 }
 
+// Check the word length to see what score does a word gives to the player.
 function checkScore(wordLength) { 
   if (wordLength < 10) { 
     score++;
@@ -579,6 +611,7 @@ function checkScore(wordLength) {
   }
 }
 
+// Check to see what level is the game on depending on how much words have the player typed right already. 
 function checkLevel() { 
   if (wordRight === 5) {  
     level = 1;
@@ -603,6 +636,7 @@ function checkLevel() {
   }
 }
 
+// Check if the player ran out of lives to display the end game statistic.
 function checkLives() { 
   if (lives === 0) { 
     endPage();
@@ -610,6 +644,7 @@ function checkLives() {
   }
 }
 
+// Show the end game statistic
 function endPage() { 
   removeWords();
 
@@ -624,7 +659,7 @@ function endPage() {
   homePageLink();
 }
 
-
+// Stop the animation of the words and remove the event listeners for each word after the game ends. 
 function removeWords() { 
   cancelAnimationFrame(wordAnimation);
   cancelAnimationFrame(word2Animation);
@@ -634,6 +669,7 @@ function removeWords() {
   removeEventListener('keydown', keyPress3);
 }
 
+// This display the text when the game starts
 function showStartingText() { 
   showStartingTextAnimation = requestAnimationFrame(showStartingText);
   ctx.font = 'bold 30px "Press Start 2P"';
@@ -652,12 +688,13 @@ window.setTimeout(function() {cancelAnimationFrame(showStartingTextAnimation);},
 window.setTimeout(function() {wordInitialize();}, 5000);
 drawScore();
 
+// clears the screen every 10 ms to make it seems like everything is moving. 
 window.setInterval(() => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }, 10);
 
+// Check every 100 ms if a word exits outside of the screen. If a word has, subtract two points from score.  
 window.setInterval(() => {
-    
   if(newWord.x > canvas.width && distance(newWord.x, newWord.y, x, y) > eventHorizonRadius) {
     if(paused === false) {wordInitialize();}
     score -= 2;
@@ -678,6 +715,7 @@ function pauseGameKeyHandler() {
   }
 }
 
+// store the word objects into local storage when the game is paused 
 function pause() {
   paused = true;
   localStorage.setItem('word1',JSON.stringify(newWord));
@@ -691,6 +729,7 @@ function pause() {
   showGamePaused();
 }
 
+// Show the word game paused when the game is paused. 
 function showGamePaused() { 
   pausedAnimation = requestAnimationFrame(showGamePaused);
   ctx.font = 'bold 30px "Press Start 2P"';
@@ -700,6 +739,7 @@ function showGamePaused() {
   ctx.fillText(words, canvas.width/2 - wordsLength, canvas.height/2 - 200);
 }
 
+// Get the word objects from local storage when the game resume and have the word animate back on the screen at the same location before the game was paused. 
 function resume() {
   cancelAnimationFrame(pausedAnimation);
   paused = false;

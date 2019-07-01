@@ -1,7 +1,6 @@
 'use strict';
 
 var playerList = getDataFromLocalStorage('playerList');
-// playerList.sort(function(a,b) {return b.score - a.score;});
 
 var list = document.getElementById('hiScoreList');
 var listItem; 
